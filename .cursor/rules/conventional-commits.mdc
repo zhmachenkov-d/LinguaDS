@@ -1,0 +1,47 @@
+---
+description: Format git commit/PR/merge messages with Conventional Commits; no direct push to main
+alwaysApply: true
+---
+
+# Conventional Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) for every git commit subject, PR title, and PR merge commit message.
+
+## Format
+
+```text
+<type>[optional scope]: <description>
+```
+
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+## Rules
+
+- Description: imperative mood, lowercase start, no trailing period
+- Keep the subject ~72 characters or less
+- Scope in parentheses when useful (e.g. `feat(auth): ...`)
+- Breaking changes: `!` after type/scope and/or a `BREAKING CHANGE:` footer
+- Optional body after a blank line for why/context
+- PR titles use the same format as the commit subject
+- PR merge messages (squash/merge commit subject) use the same Conventional Commits format as the PR title; do not use GitHub defaults like `Merge pull request #123 from ...`
+
+## Branch protection
+
+- Never push commits directly to `main` (or `master`)
+- Land changes only via pull request merge
+- Do not `git push origin main` / `git push origin HEAD:main` unless the user explicitly overrides this rule
+
+## Examples
+
+```text
+# ✅ GOOD
+feat(lessons): add spaced repetition queue
+fix: correct TTS timeout handling
+feat(api)!: remove legacy lesson schema
+
+# ❌ BAD
+Added new feature
+Update stuff.
+FEAT: New API
+Merge pull request #42 from alice/feat-lessons
+```
