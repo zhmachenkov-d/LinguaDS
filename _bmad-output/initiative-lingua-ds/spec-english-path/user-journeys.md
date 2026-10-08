@@ -1,7 +1,7 @@
 ---
 title: "English Path — User journeys"
 owned_by: bmad-spec
-derived_from: prd-english-path §2.3 UJ-1…UJ-5
+derived_from: prd-english-path §2.3 UJ-1…UJ-5; ux-english-path EXPERIENCE; architecture Plan/handoff conventions
 ---
 
 # User journeys (v1 spine)
@@ -15,7 +15,7 @@ Empty profile → first-launch onboarding (not a multi-step wizard). Ends with a
 1. **Greeting:** sparse UI; bilingual EN sample + L1 clarity; voice or text; **stop anytime**; mic optional without reproach.
 2. **Setup (≤3):** instruction language RU/EN/mixed (default mixed); format voice/text/whatever (default whatever); Session length 10/20/30 (default **10**). No interests/career/topic prefs. Show **Goal: C1** as long-term horizon in one line. First-launch may exceed default length; agent states longer plan up front.
 3. **Diagnostic conversation (~5–8 min):** adaptive placement, not a scored test. Probe order: name → origin/home → alphabet → letter reading → contrast sounds → one production word. No aloud right/wrong. Silence: slower repeat → RU → move on. Early-stop when placement evidence is enough.
-4. **Path map before lesson:** level, confirmed vs not, full A0→C1 with you-are-here, Available now, recommended mode. Status: available / open / recommended — never unlocked/points/%.
+4. **Path map before lesson:** level, confirmed vs not, full A0→C1 with you-are-here, Available now, Recommended — never unlocked/points/%.
 5. **First Phonics lesson (~8 min compressed A0.0)** in the same Session (UJ-5 micro-structure). Alphabet as small audio-first letter batches.
 6. **Finale:** confirmed / unstable / goes into review / next Session (+ length). Persist; next launch resumes without streak guilt.
 
@@ -25,10 +25,10 @@ Empty profile → first-launch onboarding (not a multi-step wizard). Ends with a
 
 No welcome-back, missed-days, or streak. Same neutral open state: short line + Start + input. **No** mode/topic/continue-vs-review chooser. Agent **names the plan**; Learner accepts, interrupts, or stops. Prefs persist.
 
-1. **Orientation (≤30s):** level, Unstable, Available now, next step + Path map.
-2. **Recommended review = first lesson block** (not a separate mode); neutral wording about Unstable items.
+1. **Orientation (≤30s):** strip **Level · Topic · Session goal · Available / Recommended** (structured lesson refs; never a Review strip token) + compact Path map context; open frame may use three lines (last stop / Unstable·Available / Next step) per UX EXPERIENCE.
+2. **Recommended review = first lesson block** (not a separate mode; not a strip token); neutral wording about Unstable items.
 3. **Self-check:** Learner recording + reference side by side **without comment**; wait for Learner’s judgment.
-4. **New material only after Unstable check**; fatigue deferral (tired / stop anytime / agent early-stop after review) defers new material without failure framing.
+4. **New material only after Unstable check**; fatigue deferral (tired / stop anytime / agent early-stop after review) defers new material without failure framing — commit earned attempt deltas; drop unattempted proposals; never Unstable solely for ending early.
 5. **Finale:** same descriptors; optional neutral fact comparison to prior Session. May attach UJ-3 overlay.
 
 ## UJ-3 — Level transition (end-of-Session overlay)
@@ -38,19 +38,19 @@ Not how the app opens. Evidence summary against Level criteria + Path map dual s
 - Enough on all criteria → next level **Available / Open**.
 - Almost enough → **Conditionally available** + Goes into review.
 - Non-critical weak → soft/conditional advance; no rollback.
-- **Critical** unmet → next level **Not available** until met (Level gate only).
+- **Critical** unmet → next level **Not available** until met (Level gate only). Pilot Critical set for **A0→A1** only — see `pilot-calibration.md`; other transitions stay principle-only.
 - Within-level weak items (e.g. phonemes) never make the next lesson Not available (see UJ-5).
 
 ## UJ-4 — Interview practice (B1+/interview milestone)
 
-Agent-named scenario (not a mode picker). Genre: register, STAR, unprepared self-talk, unexpected Qs, pause tolerance. Length typically **~45–60 min** (may override default pref; stated up front). Stop anytime.
+Agent-named scenario (not a mode picker) when soft entry in `pilot-calibration.md` holds (path at/near B1+ or assess proposes). Genre: register, STAR, unprepared self-talk, unexpected Qs, pause tolerance. Length typically **~45–60 min** (may override default pref; stated up front). Stop anytime.
 
 1. **Prep (~10–12):** posting + raw self material → English; B1+ functional language; STAR on own case.
 2. **Mock (~15–20):** coach as hiring manager; no mid-answer prompting; pauses, polite interrupt, 1–2 unexpected Qs; formal/neutral register.
-3. **Debrief (~15–20):** descriptors + fragment why; Readiness list rows = mock blocks; may Self-check fragments.
+3. **Debrief (~15–20):** descriptors + fragment why; Readiness list six rows with statuses **устойчиво / частично / неустойчиво / не проверялось** (never hide не проверялось; enough-runs heuristics in `pilot-calibration.md`); may Self-check fragments.
 4. **Optional second run.**
 
-**Finale:** readiness list + next steps; no scoreboard/badge. May attach UJ-3.
+**Finale:** readiness map alone (no ordinary next-step line); no scoreboard/badge; never certifies apply-for-jobs. May attach UJ-3.
 
 ## UJ-5 — A0 Phonics lesson
 

@@ -43,7 +43,6 @@
             "source.organizeImports": "explicit"
           }
         },
-        "githubPullRequests.defaultMergeMethod": "squash",
         "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
           {
             "text": "PR titles must follow Conventional Commits: <type>[optional scope]: <description>. Imperative mood, lowercase start, no trailing period, ~72 characters or less. Squash/merge commit subjects reuse this title — never use GitHub defaults like \"Merge pull request #…\"."
