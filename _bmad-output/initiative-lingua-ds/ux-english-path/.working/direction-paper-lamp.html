@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Direction: Paper Lamp — English Path</title>
+<style>
+/*
+  DIRECTION: Paper Lamp
+  Personality: Warm desk-lamp paper — soft amber wash on quiet paper, medium serif weight, centered alignment, gentle hairlines.
+  Careful: warm paper used, but NOT cream+#terracotta+serif broadsheet stereotype cluster (no terracotta accent, no dense columns, no hairline rules as identity).
+  Fonts (offline stacks): "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif — medium weight, modest tracking
+  Motion implication (static mock): lamp warmth implied by static wash only; plan line appears as if spoken into still air.
+  Hex — Light: bg #F7F3EC · surface #FBF8F2 · ink #2C2A26 · mute #6B655C · hairline #D9D2C6 · accent #5C564C · lamp #EDE6D8 · frame #E2DACE
+  Hex — Dark:  bg #1C1A16 · surface #24211C · ink #E8E2D6 · mute #9A9286 · hairline #3A342C · accent #C8C0B2 · lamp #1C1A16 · frame #12100C
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif;
+  background: #E8E2D6;
+  color: #2C2A26;
+  padding: 32px 40px 64px;
+  line-height: 1.6;
+}
+.rationale {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  font-size: 14px;
+  color: #5C564C;
+}
+.rationale h1 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #2C2A26;
+  margin-bottom: 10px;
+}
+.rationale p { margin-bottom: 8px; }
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+.mode-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.desktop {
+  width: 920px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.2;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.4;
+}
+.desktop-body {
+  min-height: 560px;
+  padding: 52px 80px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centered quiet study */
+  text-align: center;
+}
+
+.light .desktop { background: #F7F3EC; color: #2C2A26; border: 1px solid #D9D2C6; }
+.light .desktop-bar { background: #EDE6D8; color: #2C2A26; border-bottom: 1px solid #D9D2C6; }
+.light .desktop-body {
+  background: #F7F3EC;
+  /* soft lamp wash — radial, not gradient cliché */
+  background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+}
+.light .meta { color: #6B655C; }
+.light .primary { color: #2C2A26; }
+.light .secondary { color: #5C564C; }
+.light .path { color: #6B655C; border-top: 1px solid #D9D2C6; }
+.light .path .here { color: #2C2A26; }
+.light .field {
+  background: #FBF8F2;
+  border: 1px solid #D9D2C6;
+  color: #2C2A26;
+  caret-color: #5C564C;
+}
+.light .mic, .light .start {
+  border: 1px solid #D9D2C6;
+  color: #5C564C;
+  background: #FBF8F2;
+}
+.light .plan { color: #5C564C; }
+.light .greeting-line { color: #2C2A26; }
+.light .greeting-strip {
+  background: #F7F3EC;
+  border: 1px solid #D9D2C6;
+  color: #2C2A26;
+}
+
+.dark .desktop { background: #1C1A16; color: #E8E2D6; border: 1px solid #3A342C; }
+.dark .desktop-bar { background: #12100C; color: #E8E2D6; border-bottom: 1px solid #3A342C; }
+.dark .desktop-body {
+  background: #1C1A16;
+  background-image: radial-gradient(ellipse 60% 40% at 50% 0%, #24211C 0%, #1C1A16 75%);
+}
+.dark .meta { color: #9A9286; }
+.dark .primary { color: #E8E2D6; }
+.dark .secondary { color: #C8C0B2; }
+.dark .path { color: #9A9286; border-top: 1px solid #3A342C; }
+.dark .path .here { color: #E8E2D6; }
+.dark .field {
+  background: #24211C;
+  border: 1px solid #3A342C;
+  color: #E8E2D6;
+  caret-color: #C8C0B2;
+}
+.dark .mic, .dark .start {
+  border: 1px solid #3A342C;
+  color: #C8C0B2;
+  background: #24211C;
+}
+.dark .plan { color: #C8C0B2; }
+.dark .greeting-line { color: #E8E2D6; }
+.dark .greeting-strip {
+  background: #1C1A16;
+  border: 1px solid #3A342C;
+  color: #E8E2D6;
+}
+
+.meta {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  margin-bottom: 36px;
+  width: 100%;
+  max-width: 520px;
+}
+.status-block {
+  margin-bottom: 28px;
+  width: 100%;
+  max-width: 520px;
+}
+.primary {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.available {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.secondary {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 28px;
+}
+.path {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  padding-top: 16px;
+  margin-bottom: auto;
+  line-height: 1.75;
+  width: 100%;
+  max-width: 520px;
+}
+.path .sep { opacity: 0.45; margin: 0 6px; }
+.composer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 480px;
+}
+.field {
+  flex: 1;
+  height: 40px;
+  border-radius: 4px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  text-align: left;
+}
+.mic, .start {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  cursor: default;
+}
+.mic { width: 44px; text-align: center; }
+.plan {
+  font-size: 14px;
+  font-style: italic;
+  max-width: 480px;
+  line-height: 1.65;
+}
+
+.variant-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin: 28px 0 10px;
+  text-align: center;
+}
+.greeting-strip {
+  width: 920px;
+  border-radius: 12px;
+  padding: 36px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+}
+.greeting-line {
+  font-size: 15px;
+  font-weight: 500;
+  max-width: 420px;
+}
+.greeting-composer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+}
+</style>
+</head>
+<body>
+  <div class="rationale">
+    <h1>Paper Lamp</h1>
+    <p>Warm desk-lamp paper: soft amber wash on quiet stock, medium Garamond-family weight, centered alignment. Warm paper only — no terracotta accent, no broadsheet rules, no dense columns.</p>
+    <p>Motion implication: lamp wash is static; the plan line arrives as spoken text into still air. No glow pulse on controls.</p>
+  </div>
+
+  <div class="modes">
+    <section class="light">
+      <div class="mode-label">Light — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◉</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Light — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">◉</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark">
+      <div class="mode-label">Dark — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◉</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Dark — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">◉</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

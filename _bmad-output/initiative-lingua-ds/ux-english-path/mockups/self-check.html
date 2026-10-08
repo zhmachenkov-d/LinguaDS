@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Key screen — UJ-5 Self-check — Paper Lamp</title>
+<style>
+/*
+  EXPERIENCE sections: Component Patterns (Twin play, Yes/No, Caption toggle);
+  State Patterns (Self-check pending, Self-check no, Listening/Playing);
+  Key Flows › UJ-5; Voice and Tone; Accessibility Floor; Foundation (sparse, static).
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif;
+  background: #E8E2D6;
+  color: #2C2A26;
+  padding: 32px 40px 64px;
+  line-height: 1.6;
+}
+.page-note {
+  max-width: 960px;
+  margin: 0 auto 28px;
+  font-size: 13px;
+  color: #5C564C;
+  text-align: center;
+}
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.state-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.desktop {
+  width: 460px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+  background: #F7F3EC;
+  color: #2C2A26;
+  border: 1px solid #D9D2C6;
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  background: #EDE6D8;
+  color: #2C2A26;
+  border-bottom: 1px solid #D9D2C6;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.2;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.4;
+}
+.desktop-body {
+  min-height: 520px;
+  padding: 48px 36px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #F7F3EC;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+}
+
+.question {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2C2A26;
+  margin-bottom: 36px;
+  max-width: 320px;
+}
+.status-copy {
+  font-size: 13px;
+  color: #6B655C;
+  margin-bottom: 28px;
+  min-height: 1.3em;
+}
+.twins {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 36px;
+}
+.twin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 56px;
+}
+.play {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  border: 1px solid #8A8378;
+  background: #FBF8F2;
+  color: #5C564C;
+  font-family: inherit;
+  font-size: 18px;
+  cursor: default;
+  line-height: 1;
+}
+.caption-toggle {
+  font-size: 14px;
+  color: #6B655C;
+  letter-spacing: 0.02em;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: default;
+  padding: 0;
+}
+.point {
+  width: 48px;
+  height: 2px;
+  background: transparent;
+  margin-top: 2px;
+}
+.point.on {
+  background: #8A8378;
+}
+.play, .yesno button, .caption-toggle, .field, .mic {
+  outline: none;
+}
+.play:focus-visible, .yesno button:focus-visible, .caption-toggle:focus-visible,
+.field:focus-visible, .mic:focus-visible {
+  outline: 1px solid #5C564C;
+  outline-offset: 2px;
+}
+.agent-point {
+  font-size: 13px;
+  color: #5C564C;
+  font-style: italic;
+  margin-bottom: 28px;
+  min-height: 1.4em;
+  max-width: 300px;
+}
+.yesno {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.yesno button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  color: #2C2A26;
+  background: transparent;
+  border: none;
+  cursor: default;
+  letter-spacing: 0.02em;
+  padding: 4px 0;
+}
+.composer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: auto;
+}
+.field {
+  flex: 1;
+  height: 36px;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  background: #FBF8F2;
+  border: 1px solid #D9D2C6;
+  color: #2C2A26;
+}
+.mic {
+  width: 40px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid #D9D2C6;
+  background: #FBF8F2;
+  color: #5C564C;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: default;
+}
+</style>
+</head>
+<body>
+  <p class="page-note">UJ-5 Self-check — twin plays equal and unlabeled; quiet Yes/No; caption toggle off. Second column shows after-no underline point.</p>
+
+  <div class="columns">
+    <div class="col">
+      <div class="state-label">Pending</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="question">Do you hear the difference?</div>
+          <div class="status-copy">Playing…</div>
+          <div class="twins">
+            <div class="twin">
+              <button class="play" type="button" aria-label="Recording one">◉</button>
+              <button class="caption-toggle" type="button">Caption</button>
+              <div class="point"></div>
+            </div>
+            <div class="twin">
+              <button class="play" type="button" aria-label="Recording two">◉</button>
+              <button class="caption-toggle" type="button">Caption</button>
+              <div class="point"></div>
+            </div>
+          </div>
+          <div class="agent-point"></div>
+          <div class="yesno">
+            <button type="button">Yes</button>
+            <button type="button">No</button>
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="state-label">After no</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="question">Do you hear the difference?</div>
+          <div class="status-copy">Listening…</div>
+          <div class="twins">
+            <div class="twin">
+              <button class="play" type="button" aria-label="Recording one">◉</button>
+              <button class="caption-toggle" type="button">Caption</button>
+              <div class="point"></div>
+            </div>
+            <div class="twin">
+              <button class="play" type="button" aria-label="Recording two">◉</button>
+              <button class="caption-toggle" type="button">Caption</button>
+              <div class="point on"></div>
+            </div>
+          </div>
+          <div class="agent-point">Slower — this one again.</div>
+          <div class="yesno">
+            <button type="button">Yes</button>
+            <button type="button">No</button>
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

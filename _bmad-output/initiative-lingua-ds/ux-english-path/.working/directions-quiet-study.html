@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quiet Study — Design Directions (side-by-side)</title>
+<style>
+/*
+  Combined comparison: four quiet-study directions.
+  Hero content identical (UJ-2 return open). Density locked sparse.
+  Differentiate: type · palette · chrome only.
+  See individual files for full light+dark + UJ-1 greeting variants.
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #DCDFE4;
+  color: #2A3038;
+  padding: 28px 24px 64px;
+  font-family: Georgia, "Palatino Linotype", Palatino, serif;
+}
+header {
+  max-width: 1480px;
+  margin: 0 auto 28px;
+}
+header h1 {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+header p {
+  font-size: 13px;
+  color: #5A6470;
+  max-width: 720px;
+  line-height: 1.5;
+}
+.band-label {
+  max-width: 1480px;
+  margin: 0 auto 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6A7480;
+}
+.grid {
+  max-width: 1480px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.col-head {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  min-height: 48px;
+}
+.col-head strong {
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1E242C;
+  margin-bottom: 2px;
+}
+.col-head span {
+  color: #6A7480;
+  font-size: 11px;
+  line-height: 1.35;
+  display: block;
+}
+
+/* Shared mini desktop */
+.frame {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(20,24,30,0.1);
+}
+.bar {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.3; }
+.body {
+  height: 420px;
+  padding: 20px 22px 16px;
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.meta { opacity: 0.55; margin-bottom: 14px; font-size: 9px; }
+.line { margin-bottom: 4px; }
+.next { opacity: 0.75; margin: 8px 0 12px; font-size: 9px; }
+.path { opacity: 0.55; font-size: 8px; line-height: 1.6; margin-bottom: auto; letter-spacing: 0.02em; }
+.here { opacity: 1; }
+.composer { display: flex; gap: 6px; align-items: center; margin: 12px 0 8px; }
+.field { flex: 1; height: 24px; font-size: 10px; outline: none; }
+.btn { height: 24px; padding: 0 8px; font-size: 9px; cursor: default; }
+.plan { font-size: 9px; opacity: 0.8; line-height: 1.5; font-style: italic; }
+
+/* --- Parchment --- */
+.p-light .frame { background: #F4F6F8; color: #2A3340; border: 1px solid #C8D0DA; font-family: Georgia, "Palatino Linotype", Palatino, serif; }
+.p-light .bar { background: #E8ECF0; border-bottom: 1px solid #C8D0DA; color: #2A3340; }
+.p-light .body { background: #F4F6F8; }
+.p-light .field { background: #EEF1F4; border: 1px solid #C8D0DA; color: #2A3340; border-radius: 2px; }
+.p-light .btn { background: transparent; border: 1px solid #C8D0DA; color: #4A5A6A; border-radius: 2px; font-family: inherit; }
+.p-light .path { border-top: 1px solid #C8D0DA; padding-top: 8px; }
+.p-light .next { font-style: italic; }
+
+.p-dark .frame { background: #1A1E24; color: #D8DEE6; border: 1px solid #3A4450; font-family: Georgia, "Palatino Linotype", Palatino, serif; }
+.p-dark .bar { background: #161A20; border-bottom: 1px solid #3A4450; color: #D8DEE6; }
+.p-dark .body { background: #1A1E24; }
+.p-dark .field { background: #222830; border: 1px solid #3A4450; color: #D8DEE6; border-radius: 2px; }
+.p-dark .btn { background: transparent; border: 1px solid #3A4450; color: #A8B4C4; border-radius: 2px; font-family: inherit; }
+.p-dark .path { border-top: 1px solid #3A4450; padding-top: 8px; }
+.p-dark .next { font-style: italic; }
+
+/* --- Slate Desk --- */
+.s-light .frame { background: #E8EAED; color: #1E242C; font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; }
+.s-light .bar { background: #E8EAED; color: #1E242C; }
+.s-light .body { background: #E8EAED; padding-left: 28px; padding-right: 28px; }
+.s-light .meta { letter-spacing: 0.06em; }
+.s-light .path { letter-spacing: 0.08em; text-transform: uppercase; font-size: 7px; font-weight: 400; }
+.s-light .field { background: #F7F8F9; border: none; border-bottom: 1px solid #B8BEC6; color: #1E242C; border-radius: 0; }
+.s-light .btn { background: transparent; border: none; border-bottom: 1px solid #B8BEC6; color: #3D4654; border-radius: 0; font-family: inherit; letter-spacing: 0.1em; text-transform: uppercase; font-size: 8px; }
+.s-light .plan { font-style: normal; font-weight: 300; }
+
+.s-dark .frame { background: #14181E; color: #E4E7EC; font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; }
+.s-dark .bar { background: #14181E; color: #E4E7EC; }
+.s-dark .body { background: #14181E; padding-left: 28px; padding-right: 28px; }
+.s-dark .meta { letter-spacing: 0.06em; }
+.s-dark .path { letter-spacing: 0.08em; text-transform: uppercase; font-size: 7px; font-weight: 400; }
+.s-dark .field { background: transparent; border: none; border-bottom: 1px solid #3A424C; color: #E4E7EC; border-radius: 0; }
+.s-dark .btn { background: transparent; border: none; border-bottom: 1px solid #3A424C; color: #C4CAD4; border-radius: 0; font-family: inherit; letter-spacing: 0.1em; text-transform: uppercase; font-size: 8px; }
+.s-dark .plan { font-style: normal; font-weight: 300; }
+
+/* --- Paper Lamp --- */
+.l-light .frame { background: #F7F3EC; color: #2C2A26; border: 1px solid #D9D2C6; font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif; }
+.l-light .bar { background: #EDE6D8; border-bottom: 1px solid #D9D2C6; color: #2C2A26; }
+.l-light .body {
+  background: #F7F3EC;
+  background-image: radial-gradient(ellipse 70% 45% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+  text-align: center; align-items: center;
+}
+.l-light .field { background: #FBF8F2; border: 1px solid #D9D2C6; color: #2C2A26; border-radius: 3px; text-align: left; }
+.l-light .btn { background: #FBF8F2; border: 1px solid #D9D2C6; color: #5C564C; border-radius: 3px; font-family: inherit; }
+.l-light .path { border-top: 1px solid #D9D2C6; padding-top: 8px; width: 100%; }
+.l-light .composer { width: 100%; justify-content: center; }
+.l-light .line { font-weight: 500; }
+
+.l-dark .frame { background: #1C1A16; color: #E8E2D6; border: 1px solid #3A342C; font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif; }
+.l-dark .bar { background: #12100C; border-bottom: 1px solid #3A342C; color: #E8E2D6; }
+.l-dark .body {
+  background: #1C1A16;
+  background-image: radial-gradient(ellipse 60% 40% at 50% 0%, #24211C 0%, #1C1A16 75%);
+  text-align: center; align-items: center;
+}
+.l-dark .field { background: #24211C; border: 1px solid #3A342C; color: #E8E2D6; border-radius: 3px; text-align: left; }
+.l-dark .btn { background: #24211C; border: 1px solid #3A342C; color: #C8C0B2; border-radius: 3px; font-family: inherit; }
+.l-dark .path { border-top: 1px solid #3A342C; padding-top: 8px; width: 100%; }
+.l-dark .composer { width: 100%; justify-content: center; }
+.l-dark .line { font-weight: 500; }
+
+/* --- Ink Margin --- */
+.i-light .frame { background: #FAFAF8; color: #111111; border: 1px solid #D4D4D0; font-family: "Avenir Next", Avenir, "Century Gothic", CenturyGothic, sans-serif; border-radius: 4px; }
+.i-light .bar { background: #FFFFFF; border-bottom: 1px solid #D4D4D0; color: #111111; }
+.i-light .body { background: #FAFAF8; position: relative; padding-left: 28px; }
+.i-light .body::before { content: ""; position: absolute; left: 14px; top: 20px; bottom: 16px; width: 1px; background: #111111; opacity: 0.18; }
+.i-light .field { background: #FFFFFF; border: 1px solid #D4D4D0; color: #111111; border-radius: 0; }
+.i-light .btn { background: #FFFFFF; border: 1px solid #D4D4D0; color: #2A2A2A; border-radius: 0; font-family: inherit; letter-spacing: 0.04em; }
+.i-light .btn.start { border-color: #111111; color: #111111; }
+.i-light .here { font-weight: 600; }
+.i-light .plan { font-style: normal; letter-spacing: -0.01em; }
+.i-light .line { letter-spacing: -0.01em; }
+
+.i-dark .frame { background: #0F0F0F; color: #F2F2F0; border: 1px solid #2E2E2E; font-family: "Avenir Next", Avenir, "Century Gothic", CenturyGothic, sans-serif; border-radius: 4px; }
+.i-dark .bar { background: #080808; border-bottom: 1px solid #2E2E2E; color: #F2F2F0; }
+.i-dark .body { background: #0F0F0F; position: relative; padding-left: 28px; }
+.i-dark .body::before { content: ""; position: absolute; left: 14px; top: 20px; bottom: 16px; width: 1px; background: #F2F2F0; opacity: 0.18; }
+.i-dark .field { background: #181818; border: 1px solid #2E2E2E; color: #F2F2F0; border-radius: 0; }
+.i-dark .btn { background: #181818; border: 1px solid #2E2E2E; color: #D8D8D4; border-radius: 0; font-family: inherit; letter-spacing: 0.04em; }
+.i-dark .btn.start { border-color: #F2F2F0; color: #F2F2F0; }
+.i-dark .here { font-weight: 600; }
+.i-dark .plan { font-style: normal; letter-spacing: -0.01em; }
+.i-dark .line { letter-spacing: -0.01em; }
+
+.links {
+  max-width: 1480px;
+  margin: 0 auto;
+  font-size: 12px;
+  color: #5A6470;
+}
+.links a { color: #2A3340; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Quiet Study — four directions</h1>
+    <p>Identical UJ-2 return-open hero in every column. Density locked sparse. Differentiated only by type personality, palette, and chrome. Full light+dark and UJ-1 greeting strips live in each direction file.</p>
+  </header>
+
+  <div class="band-label">Light</div>
+  <div class="grid">
+    <div class="p-light">
+      <div class="col-head"><strong>Parchment</strong><span>Cool archival paper · letterpress serif · hairline chrome</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; English Path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">◈</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="s-light">
+      <div class="col-head"><strong>Slate Desk</strong><span>Chalk-on-slate · light sans · no chrome · wide margins</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; ENGLISH PATH</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">○</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="l-light">
+      <div class="col-head"><strong>Paper Lamp</strong><span>Warm lamp paper · Garamond · centered · soft wash</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; English Path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">◉</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="i-light">
+      <div class="col-head"><strong>Ink Margin</strong><span>Ink rail · Avenir sans · left column · square chrome</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; english path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">□</button><button class="btn start" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="band-label">Dark</div>
+  <div class="grid">
+    <div class="p-dark">
+      <div class="col-head"><strong>Parchment</strong><span>Cool archival paper · letterpress serif · hairline chrome</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; English Path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">◈</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="s-dark">
+      <div class="col-head"><strong>Slate Desk</strong><span>Chalk-on-slate · light sans · no chrome · wide margins</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; ENGLISH PATH</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">○</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="l-dark">
+      <div class="col-head"><strong>Paper Lamp</strong><span>Warm lamp paper · Garamond · centered · soft wash</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; English Path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">◉</button><button class="btn" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="i-dark">
+      <div class="col-head"><strong>Ink Margin</strong><span>Ink rail · Avenir sans · left column · square chrome</span></div>
+      <div class="frame">
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; english path</div>
+        <div class="body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="line">Unstable: /θ/ production, letters A–F</div>
+          <div class="line">Available: A0.0 — alphabet and first sounds</div>
+          <div class="next">Next step: /θ/ + A–F + /w/</div>
+          <div class="path">Path A0 → <span class="here">you are here</span> → C1<br>Goal C1 horizon · B1+/interview near-term</div>
+          <div class="composer"><input class="field" type="text"><button class="btn" type="button">□</button><button class="btn start" type="button">Start</button></div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="links">
+    Full files:
+    <a href="direction-parchment.html">direction-parchment.html</a> ·
+    <a href="direction-slate-desk.html">direction-slate-desk.html</a> ·
+    <a href="direction-paper-lamp.html">direction-paper-lamp.html</a> ·
+    <a href="direction-ink-margin.html">direction-ink-margin.html</a>
+  </div>
+</body>
+</html>

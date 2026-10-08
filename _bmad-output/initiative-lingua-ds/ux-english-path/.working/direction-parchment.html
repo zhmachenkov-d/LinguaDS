@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Direction: Parchment — English Path</title>
+<style>
+/*
+  DIRECTION: Parchment
+  Personality: Cool archival paper — quiet letterpress weight, soft blue-gray ink on cool white stock.
+  Fonts (offline stacks): Georgia / "Palatino Linotype" / "Book Antiqua" / Palatino / serif
+  Motion implication (static mock): text settles with a single soft fade-in of the plan line; no bounce.
+  Hex — Light: bg #F4F6F8 · surface #EEF1F4 · ink #2A3340 · mute #7A8494 · hairline #C8D0DA · accent #4A5A6A · frame #D8DEE6 · chrome #E8ECF0
+  Hex — Dark:  bg #1A1E24 · surface #222830 · ink #D8DEE6 · mute #8A94A4 · hairline #3A4450 · accent #A8B4C4 · frame #2A3038 · chrome #161A20
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  background: #E4E8EC;
+  color: #2A3340;
+  padding: 32px 40px 64px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+.rationale {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  font-size: 14px;
+  color: #4A5564;
+}
+.rationale h1 {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #2A3340;
+  margin-bottom: 10px;
+}
+.rationale p { margin-bottom: 8px; }
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+.mode-label {
+  font-family: Georgia, "Palatino Linotype", Palatino, serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7A8494;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Desktop browser chrome */
+.desktop {
+  width: 920px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(42,51,64,0.06), 0 12px 40px rgba(42,51,64,0.08);
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.22;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  opacity: 0.45;
+}
+.desktop-body {
+  min-height: 560px;
+  padding: 48px 72px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Light mode shell */
+.light .desktop { background: #F4F6F8; color: #2A3340; border: 1px solid #C8D0DA; }
+.light .desktop-bar { background: #E8ECF0; color: #2A3340; border-bottom: 1px solid #C8D0DA; }
+.light .desktop-body { background: #F4F6F8; }
+.light .meta { color: #7A8494; }
+.light .primary { color: #2A3340; }
+.light .secondary { color: #4A5A6A; }
+.light .path { color: #7A8494; border-top: 1px solid #C8D0DA; }
+.light .path .here { color: #2A3340; }
+.light .field {
+  background: #EEF1F4;
+  border: 1px solid #C8D0DA;
+  color: #2A3340;
+  caret-color: #4A5A6A;
+}
+.light .mic, .light .start {
+  border: 1px solid #C8D0DA;
+  color: #4A5A6A;
+  background: transparent;
+}
+.light .plan { color: #4A5A6A; }
+.light .greeting-line { color: #2A3340; }
+
+/* Dark mode shell */
+.dark .desktop { background: #1A1E24; color: #D8DEE6; border: 1px solid #3A4450; }
+.dark .desktop-bar { background: #161A20; color: #D8DEE6; border-bottom: 1px solid #3A4450; }
+.dark .desktop-body { background: #1A1E24; }
+.dark .meta { color: #8A94A4; }
+.dark .primary { color: #D8DEE6; }
+.dark .secondary { color: #A8B4C4; }
+.dark .path { color: #8A94A4; border-top: 1px solid #3A4450; }
+.dark .path .here { color: #D8DEE6; }
+.dark .field {
+  background: #222830;
+  border: 1px solid #3A4450;
+  color: #D8DEE6;
+  caret-color: #A8B4C4;
+}
+.dark .mic, .dark .start {
+  border: 1px solid #3A4450;
+  color: #A8B4C4;
+  background: transparent;
+}
+.dark .plan { color: #A8B4C4; }
+.dark .greeting-line { color: #D8DEE6; }
+
+.meta {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  margin-bottom: 36px;
+}
+.status-block { margin-bottom: 28px; }
+.primary {
+  font-size: 17px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+.available {
+  font-size: 17px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+.secondary {
+  font-size: 14px;
+  font-style: italic;
+  margin-bottom: 28px;
+}
+.path {
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  padding-top: 16px;
+  margin-bottom: auto;
+  line-height: 1.7;
+}
+.path .sep { opacity: 0.45; margin: 0 6px; }
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+.field {
+  flex: 1;
+  height: 40px;
+  border-radius: 2px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+.mic, .start {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  cursor: default;
+}
+.mic { width: 44px; text-align: center; }
+.plan {
+  font-size: 14px;
+  font-style: italic;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+/* Secondary: UJ-1 greeting strip */
+.variant-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7A8494;
+  margin: 28px 0 10px;
+  text-align: center;
+}
+.greeting-strip {
+  width: 920px;
+  border-radius: 8px;
+  padding: 28px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.light .greeting-strip {
+  background: #F4F6F8;
+  border: 1px solid #C8D0DA;
+  color: #2A3340;
+}
+.dark .greeting-strip {
+  background: #1A1E24;
+  border: 1px solid #3A4450;
+  color: #D8DEE6;
+}
+.greeting-line {
+  font-size: 15px;
+  font-weight: 400;
+}
+.greeting-composer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 520px;
+}
+</style>
+</head>
+<body>
+  <div class="rationale">
+    <h1>Parchment</h1>
+    <p>Cool archival paper: blue-gray ink on cool white stock, soft letterpress weight, hairline browser chrome. Serif stack (Georgia / Palatino) with slight tracking — a study desk after daylight, not cream-and-terracotta.</p>
+    <p>Motion implication: the spoken plan line fades in once after ~2s; everything else is already still. No bounce, no pulse on the mic.</p>
+  </div>
+
+  <div class="modes">
+    <!-- LIGHT: UJ-2 -->
+    <section class="light">
+      <div class="mode-label">Light — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◈</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Light — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">◈</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DARK: UJ-2 -->
+    <section class="dark">
+      <div class="mode-label">Dark — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">◈</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Dark — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">◈</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

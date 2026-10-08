@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Key screen — UJ-1 Full Path map — Paper Lamp</title>
+<style>
+/*
+  EXPERIENCE sections: Component Patterns (Path map);
+  Key Flows › UJ-1 step 5; State Patterns (Cold first paint density);
+  Inspiration & Anti-patterns (anti-gamification); Foundation (sparse, static).
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif;
+  background: #E8E2D6;
+  color: #2C2A26;
+  padding: 32px 40px 64px;
+  line-height: 1.6;
+}
+.page-note {
+  max-width: 920px;
+  margin: 0 auto 28px;
+  font-size: 13px;
+  color: #5C564C;
+  text-align: center;
+}
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: center;
+}
+.mode-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.desktop {
+  width: 920px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.2;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.4;
+}
+.desktop-body {
+  min-height: 560px;
+  padding: 52px 80px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.light .desktop { background: #F7F3EC; color: #2C2A26; border: 1px solid #D9D2C6; }
+.light .desktop-bar { background: #EDE6D8; color: #2C2A26; border-bottom: 1px solid #D9D2C6; }
+.light .desktop-body {
+  background: #F7F3EC;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+}
+.light .title { color: #2C2A26; }
+.light .spine { color: #6B655C; border-bottom: 1px solid #D9D2C6; }
+.light .spine .here { color: #2C2A26; }
+.light .horizon { color: #6B655C; }
+.light .row { border-bottom: 1px solid #D9D2C6; }
+.light .row-level { color: #2C2A26; }
+.light .row-status { color: #5C564C; }
+.light .agent { color: #5C564C; }
+
+.dark .desktop { background: #1C1A16; color: #E8E2D6; border: 1px solid #3A342C; }
+.dark .desktop-bar { background: #12100C; color: #E8E2D6; border-bottom: 1px solid #3A342C; }
+.dark .desktop-body {
+  background: #1C1A16;
+  background-image: radial-gradient(ellipse 60% 40% at 50% 0%, #24211C 0%, #1C1A16 75%);
+}
+.dark .title { color: #E8E2D6; }
+.dark .spine { color: #9A9286; border-bottom: 1px solid #3A342C; }
+.dark .spine .here { color: #E8E2D6; }
+.dark .horizon { color: #9A9286; }
+.dark .row { border-bottom: 1px solid #3A342C; }
+.dark .row-level { color: #E8E2D6; }
+.dark .row-status { color: #C8C0B2; }
+.dark .agent { color: #C8C0B2; }
+
+.title {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+.spine {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding-bottom: 16px;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 520px;
+  line-height: 1.75;
+}
+.spine .sep { opacity: 0.45; margin: 0 4px; }
+.horizon {
+  font-size: 13px;
+  margin-bottom: 28px;
+  max-width: 520px;
+  line-height: 1.65;
+}
+.map {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 36px;
+  text-align: left;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  font-size: 14px;
+}
+.row:last-child { border-bottom: none; }
+.row.you .row-level { font-weight: 500; }
+.agent {
+  font-size: 14px;
+  font-style: italic;
+  max-width: 480px;
+  line-height: 1.65;
+}
+</style>
+</head>
+<body>
+  <p class="page-note">UJ-1 full Path map — A0→C1 you-are-here, Goal C1 + B1+/interview. Available / Open / Recommended only. No fill gauge.</p>
+
+  <div class="modes">
+    <section class="light">
+      <div class="mode-label">Light</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="title">Path</div>
+          <div class="spine">
+            A0 <span class="sep">→</span> A1 <span class="sep">→</span> A2 <span class="sep">→</span> B1 <span class="sep">→</span> B1+ <span class="sep">→</span> B2 <span class="sep">→</span> C1
+            <br><span class="here">you are here — A0</span>
+          </div>
+          <div class="horizon">Goal C1 horizon · B1+/interview near-term</div>
+          <div class="map">
+            <div class="row you">
+              <span class="row-level">A0 — alphabet and first sounds</span>
+              <span class="row-status">Open · Recommended</span>
+            </div>
+            <div class="row">
+              <span class="row-level">A1</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">A2 – B1</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">B1+ / interview</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">B2 – C1</span>
+              <span class="row-status">Available</span>
+            </div>
+          </div>
+          <div class="agent">Сейчас A0. Сегодня — первый урок по звукам. 8 minutes.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark">
+      <div class="mode-label">Dark</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="title">Path</div>
+          <div class="spine">
+            A0 <span class="sep">→</span> A1 <span class="sep">→</span> A2 <span class="sep">→</span> B1 <span class="sep">→</span> B1+ <span class="sep">→</span> B2 <span class="sep">→</span> C1
+            <br><span class="here">you are here — A0</span>
+          </div>
+          <div class="horizon">Goal C1 horizon · B1+/interview near-term</div>
+          <div class="map">
+            <div class="row you">
+              <span class="row-level">A0 — alphabet and first sounds</span>
+              <span class="row-status">Open · Recommended</span>
+            </div>
+            <div class="row">
+              <span class="row-level">A1</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">A2 – B1</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">B1+ / interview</span>
+              <span class="row-status">Available</span>
+            </div>
+            <div class="row">
+              <span class="row-level">B2 – C1</span>
+              <span class="row-status">Available</span>
+            </div>
+          </div>
+          <div class="agent">Сейчас A0. Сегодня — первый урок по звукам. 8 minutes.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

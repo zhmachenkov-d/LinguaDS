@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Direction: Ink Margin — English Path</title>
+<style>
+/*
+  DIRECTION: Ink Margin
+  Personality: Ink-on-margin — left-aligned editorial column, strong sans contrast, narrow left margin rail, crisp black/ink on pale page.
+  Fonts (offline stacks): "Avenir Next", Avenir, "Century Gothic", CenturyGothic, sans-serif — book weight body, medium meta
+  Motion implication (static mock): margin rail is fixed; plan text types in as a single quiet line, then stillness.
+  Hex — Light: bg #FAFAF8 · surface #FFFFFF · ink #111111 · mute #6E6E6E · hairline #D4D4D0 · accent #2A2A2A · rail #111111 · frame #E8E8E4
+  Hex — Dark:  bg #0F0F0F · surface #181818 · ink #F2F2F0 · mute #9A9A96 · hairline #2E2E2E · accent #D8D8D4 · rail #F2F2F0 · frame #080808
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Avenir Next", Avenir, "Century Gothic", CenturyGothic, sans-serif;
+  background: #E8E8E4;
+  color: #111111;
+  padding: 32px 40px 64px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rationale {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  font-size: 13px;
+  color: #6E6E6E;
+}
+.rationale h1 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #111111;
+  margin-bottom: 10px;
+}
+.rationale p { margin-bottom: 8px; }
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+.mode-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6E6E6E;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.desktop {
+  width: 920px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(17,17,17,0.08);
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+}
+.desktop-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: currentColor; opacity: 0.25;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  opacity: 0.4;
+  font-weight: 500;
+}
+.desktop-body {
+  min-height: 560px;
+  padding: 44px 64px 40px 72px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+/* ink margin rail */
+.desktop-body::before {
+  content: "";
+  position: absolute;
+  left: 40px;
+  top: 44px;
+  bottom: 40px;
+  width: 1px;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+.light .desktop { background: #FAFAF8; color: #111111; border: 1px solid #D4D4D0; }
+.light .desktop-bar { background: #FFFFFF; color: #111111; border-bottom: 1px solid #D4D4D0; }
+.light .desktop-body { background: #FAFAF8; }
+.light .meta { color: #6E6E6E; }
+.light .primary { color: #111111; }
+.light .secondary { color: #2A2A2A; }
+.light .path { color: #6E6E6E; }
+.light .path .here { color: #111111; font-weight: 600; }
+.light .field {
+  background: #FFFFFF;
+  border: 1px solid #D4D4D0;
+  color: #111111;
+  caret-color: #111111;
+}
+.light .mic, .light .start {
+  border: 1px solid #D4D4D0;
+  color: #2A2A2A;
+  background: #FFFFFF;
+}
+.light .start { border-color: #111111; color: #111111; }
+.light .plan { color: #2A2A2A; }
+.light .greeting-line { color: #111111; }
+.light .greeting-strip {
+  background: #FAFAF8;
+  border: 1px solid #D4D4D0;
+  color: #111111;
+}
+
+.dark .desktop { background: #0F0F0F; color: #F2F2F0; border: 1px solid #2E2E2E; }
+.dark .desktop-bar { background: #080808; color: #F2F2F0; border-bottom: 1px solid #2E2E2E; }
+.dark .desktop-body { background: #0F0F0F; }
+.dark .meta { color: #9A9A96; }
+.dark .primary { color: #F2F2F0; }
+.dark .secondary { color: #D8D8D4; }
+.dark .path { color: #9A9A96; }
+.dark .path .here { color: #F2F2F0; font-weight: 600; }
+.dark .field {
+  background: #181818;
+  border: 1px solid #2E2E2E;
+  color: #F2F2F0;
+  caret-color: #F2F2F0;
+}
+.dark .mic, .dark .start {
+  border: 1px solid #2E2E2E;
+  color: #D8D8D4;
+  background: #181818;
+}
+.dark .start { border-color: #F2F2F0; color: #F2F2F0; }
+.dark .plan { color: #D8D8D4; }
+.dark .greeting-line { color: #F2F2F0; }
+.dark .greeting-strip {
+  background: #0F0F0F;
+  border: 1px solid #2E2E2E;
+  color: #F2F2F0;
+}
+
+.meta {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  margin-bottom: 32px;
+}
+.status-block { margin-bottom: 24px; }
+.primary {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.available {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.secondary {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-bottom: 28px;
+}
+.path {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  margin-bottom: auto;
+  line-height: 1.8;
+  font-weight: 500;
+}
+.path .sep { opacity: 0.35; margin: 0 6px; }
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+  margin-bottom: 18px;
+  max-width: 560px;
+}
+.field {
+  flex: 1;
+  height: 38px;
+  border-radius: 0;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+}
+.mic, .start {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  cursor: default;
+}
+.mic { width: 40px; text-align: center; }
+.plan {
+  font-size: 13px;
+  font-weight: 400;
+  max-width: 560px;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
+.variant-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6E6E6E;
+  margin: 28px 0 10px;
+  text-align: center;
+  font-weight: 500;
+}
+.greeting-strip {
+  width: 920px;
+  border-radius: 4px;
+  padding: 32px 64px 32px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  box-shadow: 0 2px 16px rgba(17,17,17,0.08);
+}
+.greeting-strip::before {
+  content: "";
+  position: absolute;
+  left: 40px;
+  top: 32px;
+  bottom: 32px;
+  width: 1px;
+  background: currentColor;
+  opacity: 0.18;
+}
+.greeting-line {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.greeting-composer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: 480px;
+}
+</style>
+</head>
+<body>
+  <div class="rationale">
+    <h1>Ink Margin</h1>
+    <p>Ink-on-margin: left-aligned editorial column, Avenir-family sans with tight tracking on headlines, a single vertical margin rail, crisp near-black on pale page. Hairline chrome, square corners, no softness theater.</p>
+    <p>Motion implication: the plan line types in once along the rail, then the page holds still. Start is ink-outlined only — never filled.</p>
+  </div>
+
+  <div class="modes">
+    <section class="light">
+      <div class="mode-label">Light — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">english path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">□</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Light — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">□</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark">
+      <div class="mode-label">Dark — UJ-2 return open</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">english path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="meta">Last session: 12 minutes. Stopped at /θ/ and letters A–F.</div>
+          <div class="status-block">
+            <div class="primary">Unstable: /θ/ production, letters A–F</div>
+            <div class="available primary">Available: A0.0 — alphabet and first sounds</div>
+            <div class="secondary">Next step: /θ/ + A–F + /w/</div>
+          </div>
+          <div class="path">
+            Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> C1
+            <br>Goal C1 horizon · B1+/interview near-term
+          </div>
+          <div class="composer">
+            <input class="field" type="text" value="" aria-label="input">
+            <button class="mic" type="button" aria-label="microphone">□</button>
+            <button class="start" type="button">Start</button>
+          </div>
+          <div class="plan">Let's start with what remained unstable: /θ/ and letters A–F. Then we'll introduce /w/. 10 minutes.</div>
+        </div>
+      </div>
+      <div class="variant-label">Dark — UJ-1 greeting (sparse)</div>
+      <div class="greeting-strip">
+        <div class="greeting-line">Hello. Привет — скажи, как тебя зовут.</div>
+        <div class="greeting-composer">
+          <input class="field" type="text" value="" aria-label="input">
+          <button class="mic" type="button" aria-label="microphone">□</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

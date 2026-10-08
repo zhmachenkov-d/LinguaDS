@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Key screen — UJ-3 Level transition — Paper Lamp</title>
+<style>
+/*
+  EXPERIENCE sections: Information Architecture (Level transition canvas);
+  Component Patterns (Criteria table, Path map); State Patterns (Level transition);
+  Key Flows › UJ-3; Inspiration & Anti-patterns (rejected victory modal); Foundation (sparse, static).
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif;
+  background: #E8E2D6;
+  color: #2C2A26;
+  padding: 32px 40px 64px;
+  line-height: 1.6;
+}
+.page-note {
+  max-width: 920px;
+  margin: 0 auto 28px;
+  font-size: 13px;
+  color: #5C564C;
+  text-align: center;
+}
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.state-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.desktop {
+  width: 920px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+  background: #F7F3EC;
+  color: #2C2A26;
+  border: 1px solid #D9D2C6;
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  background: #EDE6D8;
+  color: #2C2A26;
+  border-bottom: 1px solid #D9D2C6;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.2;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.4;
+}
+.desktop-body {
+  min-height: 600px;
+  padding: 48px 72px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #F7F3EC;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2C2A26;
+  margin-bottom: 8px;
+}
+.transition-status {
+  font-size: 14px;
+  color: #5C564C;
+  margin-bottom: 32px;
+}
+
+table.criteria {
+  width: 100%;
+  max-width: 640px;
+  border-collapse: collapse;
+  margin-bottom: 36px;
+  text-align: left;
+  font-size: 13px;
+}
+table.criteria th {
+  font-weight: 500;
+  color: #6B655C;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 0 12px 10px 0;
+  border-bottom: 1px solid #D9D2C6;
+}
+table.criteria td {
+  color: #2C2A26;
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid #D9D2C6;
+  vertical-align: top;
+  font-weight: 400;
+}
+table.criteria td:last-child,
+table.criteria th:last-child {
+  padding-right: 0;
+  text-align: right;
+}
+table.criteria .mute {
+  color: #6B655C;
+}
+
+.path {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #6B655C;
+  border-top: 1px solid #D9D2C6;
+  padding-top: 16px;
+  margin-bottom: 28px;
+  line-height: 1.75;
+  width: 100%;
+  max-width: 520px;
+}
+.path .here { color: #2C2A26; }
+.path .sep { opacity: 0.45; margin: 0 6px; }
+
+.review {
+  font-size: 14px;
+  color: #2C2A26;
+  margin-bottom: 10px;
+  max-width: 520px;
+}
+.next {
+  font-size: 14px;
+  color: #5C564C;
+  max-width: 520px;
+  margin-top: auto;
+}
+</style>
+</head>
+<body>
+  <p class="page-note">UJ-3 Level transition — end-of-session full canvas (not modal). Case B: Conditionally available. Illustrative criteria only.</p>
+
+  <div class="wrap">
+    <div class="state-label">End of session</div>
+    <div class="desktop">
+      <div class="desktop-bar">
+        <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+        <span class="desktop-title">English Path</span>
+      </div>
+      <div class="desktop-body">
+        <div class="title">Conditionally available</div>
+        <div class="transition-status">A0 materials remain Available · A1 Conditionally available</div>
+
+        <table class="criteria">
+          <thead>
+            <tr>
+              <th>Criterion</th>
+              <th>Threshold</th>
+              <th>Evidence</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Alphabet recognition</td>
+              <td class="mute">26 of 26</td>
+              <td class="mute">24 of 26</td>
+              <td>Almost confirmed</td>
+            </tr>
+            <tr>
+              <td>Core sounds production</td>
+              <td class="mute">stable set</td>
+              <td class="mute">stable set held</td>
+              <td>Confirmed</td>
+            </tr>
+            <tr>
+              <td>First-word responses</td>
+              <td class="mute">3 dialogues</td>
+              <td class="mute">3 of 3</td>
+              <td>Confirmed</td>
+            </tr>
+            <tr>
+              <td>Letter–sound link</td>
+              <td class="mute">A–M set</td>
+              <td class="mute">A–F Unstable</td>
+              <td>Unstable</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="path">
+          Path A0 <span class="sep">→</span> <span class="here">you are here</span> <span class="sep">→</span> A1 <span class="sep">→</span> C1
+          <br>Goal C1 horizon · B1+/interview near-term
+        </div>
+
+        <div class="review">Goes into review: letters A–F, letter–sound link</div>
+        <div class="next">Next session: A1 materials with A–F woven into review. 10 minutes.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

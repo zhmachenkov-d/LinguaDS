@@ -3,9 +3,10 @@
 **Lens:** Verify every committed decision was web-researched or reality-checked rather than asserted from training data: current library/framework versions, that each named technology still exists and fits, and — greenfield — the live defaults of any starter it leans on. Flag anything that could be out of date and wasn't confirmed against the web, the existing project, or the current starter.
 
 **Spine:** `architecture-english-path.md`  
-**Checked:** 2026-10-08 (independent re-check)  
-**Project posture:** greenfield (repo has BMAD artifacts only; no app code to ratify)  
-**Evidence used:** npm registry (`@deepseek-ai/dsh`, `@deepseek-ai/cordis`, related packages), PyPI (`faster-whisper`, `kokoro`), DeepSeek Harness docs/README (first-plugin tutorial, providers guide, dsh CLI README), memlog version note
+**Memlog:** `.memlog.md`  
+**Checked:** 2026-10-08 (independent re-check against current spine text)  
+**Project posture:** greenfield (BMAD artifacts only; no app code to ratify)  
+**Evidence used:** npm registry (`@deepseek-ai/dsh`, `@deepseek-ai/cordis`, `@deepseek-ai/dsh-experimental-voice-input-bundle`, `better-sqlite3`, related LLM packages), PyPI (`faster-whisper`, `kokoro`), DeepSeek Harness docs (first-plugin, package-and-install / publish, providers), upstream `package.json` engines, memlog version note
 
 ---
 
@@ -13,7 +14,7 @@
 
 **pass-with-findings**
 
-Named Stack pins for dsh / Cordis / faster-whisper / Kokoro largely match live npm/PyPI as of this check, and the spine’s “verified 2026-10-08” claim is credible for those versions. Remaining issues are incomplete constraint reality-checks (Kokoro Python upper bound), incomplete greenfield starter/profile defaults vs live Harness, and a slightly stale Harness voice-gap claim (experimental ASR bundle now ships). No fabricated or dead technologies found.
+Named Stack pins (`dsh` 0.2.0-rc.2, Cordis 4.0.4, faster-whisper 1.2.1, Kokoro 0.9.4) and the sidecar Python bound (`>=3.10,<3.13`) match live npm/PyPI as of this check. Prior tech-verify gaps on Python ceiling, SenseVoice acknowledgment, and naming a Node SQLite driver are largely closed in the current spine. Remaining issues are greenfield starter/profile install defaults still incompletely reconciled (bundle `cordis.patch.yml` vs absolute-path `--patch` overlay), and missing host **Node** engine bounds that both Harness and `better-sqlite3` require.
 
 ---
 
@@ -21,116 +22,139 @@ Named Stack pins for dsh / Cordis / faster-whisper / Kokoro largely match live n
 
 | Claim in spine | Live check (2026-10-08) | Status |
 | --- | --- | --- |
-| `@deepseek-ai/dsh` **0.2.0-rc.2** | npm `latest` = `0.2.0-rc.2`; also published `0.2.1-alpha.1`. Package exists; preview + breaking-changes disclaimer matches official README. | **OK** (pin + “re-pin at implement” appropriate) |
-| `@deepseek-ai/cordis` **4.0.4** | npm latest stable = `4.0.4`; `4.0.5-alpha.1` exists. `dsh@0.2.0-rc.2` depends on `@deepseek-ai/cordis` `~4.0.4`. | **OK** |
+| `@deepseek-ai/dsh` **0.2.0-rc.2** | npm `latest` / `next` = `0.2.0-rc.2`; `alpha` = `0.2.1-alpha.1`. Package exists; README developer-preview + breaking-changes disclaimer matches. | **OK** (pin + “re-pin at implement” appropriate) |
+| `@deepseek-ai/cordis` **4.0.4** | npm `latest` = `4.0.4`; `4.0.5-alpha.1` exists under tag `dsh-0-2-1-alpha-1`. `dsh@0.2.0-rc.2` depends on `@deepseek-ai/cordis` `~4.0.4`. | **OK** |
 | Plugin language **TypeScript** (Harness Cordis plugin) | Official first-plugin docs: TS module exporting `apply(ctx)`, `import type { Context } from '@deepseek-ai/cordis'`. | **OK** |
-| `cordis.yml` overlay / registration | Live: tutorial uses `cordis.yml` as `--patch` overlay; profiles use **`cordis.patch.yml`**; installable plugins land via profile `dsh.profile.bundles` / `dsh plugin`. | **Partial** — see F2 |
-| DeepSeek LLM via Harness + **`DEEPSEEK_API_KEY`** | `dsh-llm-deepseek` default `apiKeyEnv` = `DEEPSEEK_API_KEY`; also UI → `$DSH_HOME/.credentials.yaml`. | **OK** |
-| SpeechIn **faster-whisper 1.2.1** | PyPI latest = `1.2.1`; SYSTRAN/faster-whisper still live; `Requires-Python: >=3.9`. | **OK** |
-| SpeechOut **Kokoro TTS 0.9.4** | PyPI `kokoro` (hexgrad) latest = `0.9.4`; not yanked. `Requires-Python: >=3.10,<3.13`. | **Version OK; constraint gap** — see F1 |
-| Speech sidecar **Python 3.11+** | Conflicts with Kokoro’s `<3.13` ceiling; open-ended “3.11+” admits 3.13/3.14 which cannot install 0.9.4. | **Out of date / unchecked** — F1 |
-| LearnerStore **SQLite 3** | SQLite 3.x family still current (local Python linked lib 3.46.1). No Node driver named. | **Family OK; adapter underspecified** — F4 |
-| Operational envelope: desktop app or `dsh web` | Official: `npx @deepseek-ai/dsh web` → `:3080`; Desktop is a real carrier; CLI reserves `desktop` profile name. | **OK** |
+| Structural Seed `cordis.patch.yml` (“Harness overlay / absolute plugin paths”) | Installable **bundle** ships `cordis.patch.yml` + `package.json` `dsh.bundle.patch`; rows use **package name**, not absolute paths. Local scratch tutorial uses `--patch` overlay (often `cordis.yml`) with **absolute** `name:` paths. Profile layer also has its own `cordis.patch.yml` after bundles. | **Partial** — see F1 |
+| DeepSeek LLM / API + **`DEEPSEEK_API_KEY`** | `@deepseek-ai/dsh-llm-deepseek` default `apiKeyEnv` = `DEEPSEEK_API_KEY`; UI credentials at `$DSH_HOME/.credentials.yaml` complementary. | **OK** |
+| SpeechIn **faster-whisper 1.2.1** | PyPI latest = `1.2.1`; not yanked; `Requires-Python: >=3.9`. | **OK** |
+| SpeechOut **Kokoro TTS 0.9.4** | PyPI `kokoro` (hexgrad) latest = `0.9.4`; not yanked; `Requires-Python: >=3.10,<3.13`. | **OK** |
+| Speech sidecar **Python `>=3.10,<3.13`** | Matches Kokoro 0.9.4 declared bound exactly. | **OK** (prior open-ended “3.11+” defect closed) |
+| LearnerStore **SQLite 3 via `better-sqlite3` (pin at implement)** | `better-sqlite3` latest = **13.0.3**; `engines.node: >=22`. SQLite 3.x family current. Driver named; version intentionally deferred. | **OK with note** — see F3 |
+| Operational envelope: desktop / `dsh web` | Official: `npx @deepseek-ai/dsh web` → `:3080`; Desktop app is a real v0.2 carrier; `desktop` profile name reserved for Electron host. | **OK** |
 | Developer preview / breaking changes | Official README: developer preview, compatibility-breaking changes expected. | **OK** |
-| AD-5 “Harness-native voice gaps” | Host ships `@deepseek-ai/dsh-experimental-voice-input-bundle` (SenseVoice local ASR; no official TTS). Own ports still justified for FR-33/TTS/quality, but “gaps” claim is broader than current host. | **Stale framing** — F3 |
-| Memlog: “verified via npm/PyPI 2026-10-08” | Independent re-check agrees on the four package pins. | **Credible** |
+| AD-5 SenseVoice as SpeechIn adapter candidate | `dsh@0.2.0-rc.2` depends on `@deepseek-ai/dsh-experimental-voice-input-bundle@0.2.0-rc.2` (“local SenseVoice”; input-only; no product TTS). Own Speech ports still justified for FR-33 / TTS / adapter control. | **OK** (prior “voice gaps” framing updated) |
+| Host **Node** engines | Upstream harness root `package.json`: `engines.node = ^22.19.0 \|\| >=24.0.0`. Published npm `dsh` has no `engines` field. Not listed in Stack. | **Unchecked in spine** — see F2 |
+| Memlog: “verified via npm/PyPI 2026-10-08” | Independent re-check agrees on the four package pins + Python bound. | **Credible** |
 
-Technologies named in Deferred (wav2vec2 / MFA) were not Stack-bound; not scored as pin failures.
+Technologies named only in Deferred (wav2vec2 / MFA) were not Stack-bound; not scored as pin failures. Architecture decisions AD-1…AD-11 that are ownership/session contracts (not library pins) were not re-litigated under this lens beyond “named tech still exists and fits.”
 
 ---
 
 ## Findings
 
-### F1 — High — Sidecar Python floor/ceiling not reality-checked against Kokoro
+### F1 — Medium — Bundle `cordis.patch.yml` still described as absolute-path “overlay”
 
-**Spine:** “Speech sidecar (optional) | Python 3.11+” with SpeechOut = Kokoro **0.9.4**.
+**Spine Structural Seed:**
 
-**Live:** `kokoro==0.9.4` declares `Requires-Python: >=3.10,<3.13`. On this runner (Python 3.14), `pip install kokoro==0.9.4` refuses the pin; only ≤0.7.16 is visible to that interpreter.
+```text
+cordis.patch.yml                 # Harness overlay (absolute plugin paths per dsh docs)
+```
 
-**Why it matters:** An implementer following “3.11+” can pick 3.13+ and fail cold-start for the seeded TTS adapter. The lower bound “3.11” is stricter than Kokoro’s 3.10 floor without stated reason; the missing upper bound is the real defect.
+**Live Harness defaults (package-and-install + first-plugin tutorials):**
 
-**Disposition:** Autofix candidate — change to `Python >=3.11,<3.13` (or `>=3.10,<3.13` if 3.10 is acceptable) and note that Kokoro 0.9.4 blocks 3.13+.
+1. **Installable bundle:** package root has `package.json` with `dsh.bundle.patch` → `./cordis.patch.yml`, plus plugin entry; patch rows use **`name: <package-name>`** (e.g. `dsh-hello-plugin`), not absolute filesystem paths.
+2. **Local scratch / `--patch` overlay:** first-plugin tutorial uses a separate overlay file (commonly `cordis.yml`) with **absolute** `name:` paths and `pnpm dsh web --patch ./…`.
+3. **Profile layer:** `$DSH_HOME/profiles/<name>/cordis.patch.yml` is the **user** patch applied *after* every bundle layer — distinct from the bundle’s shipped patch.
+4. **Install path:** `dsh plugin --profile <name> add …` appends to `dsh.profile.bundles` (after `@deepseek-ai/dsh-base`); custom profiles via `--from-default-profile`; shipped surfaces include `web`, `headless`, `sdk`, `sdk-minimal`, `acp`; **`desktop` is reserved**.
 
----
+**Gap:** Naming the file `cordis.patch.yml` is now aligned with the installable-bundle shape (good vs earlier `cordis.yml`-only seed), but the comment still treats it as a Harness **overlay with absolute paths**. That merges three live artifacts (bundle patch / profile patch / `--patch` overlay) and omits the required `dsh.bundle` / `dsh plugin` / default-profile pathway implementers will hit first on greenfield.
 
-### F2 — High — Greenfield Harness starter / profile defaults not fully reconciled
-
-**Spine leans on:** single installable `english-path` Cordis plugin bundle; Structural Seed root `cordis.yml` (“Harness overlay / plugin registration”); operational note of an `english-path` profile; `dsh web` / desktop.
-
-**Live starter defaults (first-plugin + CLI README):**
-
-1. **Local scratch path:** `scratch-plugin/src/*.ts` + overlay YAML with `- insert:` / **absolute** `name:` path; launch `pnpm dsh web --patch ./…/cordis.yml`.
-2. **Profile patches:** user/profile layer is **`cordis.patch.yml`** under `$DSH_HOME/profiles/<name>/`, not a package-root `cordis.yml` as the durable install shape.
-3. **Shipped profiles:** `web`, `headless`, `sdk`, `sdk-minimal`, `acp` auto-init; custom profiles via `--from-default-profile`; **`desktop` is reserved** for the Electron host.
-4. **Out-of-tree install:** `dsh plugin --profile <name> …` installs into the profile’s `node_modules` and `dsh.profile.bundles` composition — distinct from a tutorial overlay file.
-
-**Gap:** The Structural Seed reads like a product module tree (fine) but labels `cordis.yml` as if it were the canonical Harness registration artifact without distinguishing overlay vs profile patch vs installable bundle. The phrase “`english-path` profile” is plausible as a **custom** profile but was not pinned to the live create/boot pathway (`--from-default-profile` / which template / whether the bundle instead mounts into `web`/`desktop`).
-
-**Disposition:** Discuss / light spine edit — add one sentence under Structural Seed or Stack clarifying: (a) installable package + profile bundle entry vs `--patch` overlay for dev, (b) custom profile creation command or “overlay on `web`/`desktop`”, (c) prefer naming `cordis.patch.yml` where the host expects it.
+**Disposition:** Light spine edit — clarify: (a) bundle `cordis.patch.yml` + `package.json` `dsh.bundle`; (b) absolute-path `--patch` overlay for local scratch only; (c) how `english-path` mounts into `web`/`desktop` or a custom profile (`dsh plugin` / `--from-default-profile`).
 
 ---
 
-### F3 — Medium — AD-5 voice-gap rationale not re-checked against current Harness speech surface
+### F2 — Medium — Host Node engine bounds missing from Stack (greenfield)
 
-**Spine AD-5 Prevents:** “coupling A0 quality bar to Harness-native voice gaps.”
+**Spine Stack** pins dsh/Cordis/speech/Python/SQLite driver family but does not name a Node version.
 
-**Live:** `dsh@0.2.0-rc.2` depends on `@deepseek-ai/dsh-experimental-voice-input-bundle` (same version line). That bundle provides local **SenseVoice** ASR (sherpa-onnx), mic capture, transcript insert; shipped profiles leave it disabled; it is **input-only** (no product TTS). Community plugins pair SenseVoice / faster-whisper with Kokoro or Edge TTS.
+**Live:**
 
-**Assessment:** Keeping **own SpeechIn/SpeechOut ports** still fits FR-33 (MOS/slowdown, phonics bar, swappable adapters, no cloud ASR/TTS). The absolute “Harness has voice gaps” framing was not updated against the experimental ASR service that now exists on the host.
+- Harness source root (`deepseek-ai/deepseek-harness` `package.json`, currently line `0.2.1-alpha.1`): `engines.node = ^22.19.0 || >=24.0.0`.
+- Published `@deepseek-ai/dsh` has **no** `engines` field (installs on older Node without npm warning; failures appear at runtime — documented in community install notes).
+- Chosen seed driver `better-sqlite3@13.x` declares `engines.node: >=22`.
 
-**Disposition:** Autofix candidate (wording only) — acknowledge experimental host ASR; state own ports because FR-33 / TTS / adapter control, not because the host has zero speech surface.
+**Why it matters:** On greenfield, an implementer on Node 20 can satisfy every named Stack pin string and still fail Harness boot and native SQLite builds. This is a live-default / reality-check gap for the starter the spine leans on, not a wrong package name.
 
----
-
-### F4 — Low — SQLite “3” is a family label; Node adapter library unchosen
-
-**Spine:** `LearnerStore adapter | SQLite 3 (snapshot + journal tables)`.
-
-**Live:** SQLite 3.x remains the current major line. No brownfield driver exists in-repo. Common Node choices (`better-sqlite3`, `node:sqlite`, `sql.js`, etc.) were not named or web-checked.
-
-**Assessment:** Acceptable SEED altitude if “SQLite 3” means storage format only and the driver is intentionally deferred. As a tech-verify finding: the pin was not confirmed as a concrete library version the way dsh/Cordis/whisper/kokoro were.
-
-**Disposition:** Defer to implement / optional Stack note — “SQLite 3.x via TBD Node driver” so epics do not diverge on driver choice silently; or pin a driver after a short spike.
+**Disposition:** Autofix candidate — add Stack row e.g. `Node.js | ^22.19.0 \|\| >=24.0.0 (Harness engines; better-sqlite3 needs >=22)` with “re-check at implement.”
 
 ---
 
-### F5 — Low — Newer alphas exist; evidence trail is in memlog only
+### F3 — Low — `better-sqlite3` named but unpinned; native-build fitness not stated
 
-- `dsh@0.2.1-alpha.1` and `cordis@4.0.5-alpha.1` exist ahead of the pinned RC/stable.
-- Spine Stack line “SEED — verified 2026-10-08” matches memlog; the spine itself does not cite commands/URLs (fine for altitude, but this lens cannot see verification without re-running checks).
+**Spine:** `SQLite 3 via better-sqlite3 (pin at implement)`.
 
-**Disposition:** Ignore / already covered by “re-pin at implement.” No spine change required unless the team wants a one-line “npm latest RC / stable as of date” footnote.
+**Live:** Latest npm = `13.0.3`, Node `>=22`, native addon (`node-addon-api`). Fits local LearnerStore; no brownfield driver conflict.
+
+**Assessment:** Acceptable SEED altitude given explicit deferral. Under this lens the version was not confirmed the way whisper/kokoro were; native compile / Electron-vs-`dsh web` ABI is the residual risk, not package death.
+
+**Disposition:** Defer to implement (already signaled) — optionally note “native addon; pin after first successful desktop/`dsh web` smoke.”
+
+---
+
+### F4 — Low — Kokoro runtime extras (torch / espeak-ng) not in Stack
+
+**Spine** pins `kokoro` 0.9.4 and Python bounds correctly.
+
+**Live PyPI / project docs:** `kokoro` 0.9.4 depends on `torch`, `transformers`, `misaki[en]`, etc.; official usage also installs **espeak-ng** for English OOD fallback. Version pin is current; operational fitness for FR-33 Self-check on constrained desktops was not reality-checked beyond the PyPI package existing.
+
+**Disposition:** Ignore for pin accuracy / optional sidecar README note at implement — not a false version claim.
+
+---
+
+### F5 — Low — Newer alphas exist ahead of pinned RC/stable
+
+- `dsh@0.2.1-alpha.1` and `cordis@4.0.5-alpha.1` exist ahead of pinned `0.2.0-rc.2` / `4.0.4`.
+- Spine “SEED — verified 2026-10-08” + “re-pin at implement” already covers churn.
+
+**Disposition:** Ignore / already covered. No spine change required.
+
+---
+
+## Closed since prior tech-verify (for gate continuity)
+
+| Prior finding | Current spine | This check |
+| --- | --- | --- |
+| Sidecar Python `3.11+` vs Kokoro `<3.13` | Now `>=3.10,<3.13` | **Closed** |
+| AD-5 “Harness-native voice gaps” without SenseVoice | AD-5 names experimental SenseVoice as SpeechIn adapter candidate | **Closed** (wording fit) |
+| SQLite 3 family only; no Node driver | Names `better-sqlite3` (pin at implement) | **Mostly closed** → residual F3 |
+| Structural Seed `cordis.yml` as sole registration | Renamed to `cordis.patch.yml` | **Partially closed** → residual F1 comment/pathway |
 
 ---
 
 ## What checked out (no finding)
 
-- Cordis-as-Harness plugin framework (`@deepseek-ai/cordis`) exists and is the dsh peer/runtime dependency.
-- TypeScript plugin authoring model matches current docs.
-- `DEEPSEEK_API_KEY` is the live default credential env name for the DeepSeek LLM plugin (UI credentials path is complementary, not contradictory).
-- faster-whisper **1.2.1** and kokoro **0.9.4** exist, are current latest releases, and fit local SpeechIn/SpeechOut adapter roles.
+- Cordis is the live Harness plugin framework; `dsh@0.2.0-rc.2` depends on `@deepseek-ai/cordis ~4.0.4`.
+- TypeScript `apply(ctx)` authoring model matches current docs.
+- `DEEPSEEK_API_KEY` is the live default credential env name for the DeepSeek LLM plugin.
+- faster-whisper **1.2.1** and kokoro **0.9.4** exist, are current latest releases, and fit local SpeechIn/SpeechOut adapter roles behind ports.
+- Python sidecar bound matches Kokoro’s declared `Requires-Python`.
 - Local/desktop + `dsh web` operational envelope matches current product surface.
 - Preview instability disclaimer is accurate.
+- Own Speech ports remain justified: host experimental ASR is input-only; FR-33 TTS/MOS/slowdown and Self-check locality stay english-path responsibilities.
 - No brownfield contradiction (greenfield repo).
+- Memlog verification claim is consistent with independent registry checks.
 
 ---
 
 ## Suggested autofixes (for Finalize parent)
 
-1. Tighten sidecar Python to **`>=3.11,<3.13`** (align with Kokoro 0.9.4).
-2. Clarify Structural Seed registration: overlay `cordis.yml` for local `--patch` vs profile `cordis.patch.yml` / `dsh plugin` install; state how `english-path` relates to shipped `web`/`desktop` profiles.
-3. Soften AD-5 voice-gap wording to reflect experimental SenseVoice input bundle while keeping own Speech ports.
+1. Fix Structural Seed comment + one install sentence: bundle `cordis.patch.yml` + `dsh.bundle` / package-name rows vs absolute-path `--patch` overlay; state `dsh plugin` into `web`/`desktop` or custom profile.
+2. Add Stack row for **Node** `^22.19.0 || >=24.0.0` (Harness engines; aligns with `better-sqlite3`).
+3. Optional: note `better-sqlite3` native-addon / pin-after-smoke at implement (already deferred).
 
 ---
 
 ## Sources (this review)
 
-- `npm view @deepseek-ai/dsh@0.2.0-rc.2` / version list; dependency on `@deepseek-ai/cordis ~4.0.4` and `dsh-experimental-voice-input-bundle`
-- `npm view @deepseek-ai/cordis` versions (`4.0.4` latest stable)
-- PyPI `faster-whisper` / `kokoro` JSON + `pip install kokoro==0.9.4` dry-run on Python 3.14
-- https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/
-- https://deepseek-harness.github.io/deepseek-harness/en/guide/providers
-- https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/README.md
-- `@deepseek-ai/dsh` packaged README (profiles, `dsh web`, `dsh plugin`)
-- https://pypi.org/project/kokoro/0.9.4/ (`Requires-Python: <3.13,>=3.10`)
+- `npm view @deepseek-ai/dsh` / `@deepseek-ai/dsh@0.2.0-rc.2` (dist-tags, versions, dependencies including voice-input bundle + cordis `~4.0.4`)
+- `npm view @deepseek-ai/cordis` (latest `4.0.4`)
+- `npm view @deepseek-ai/dsh-experimental-voice-input-bundle@0.2.0-rc.2`
+- `npm view better-sqlite3` (latest `13.0.3`, `engines.node >=22`)
+- PyPI JSON: `faster-whisper` / `faster-whisper/1.2.1`, `kokoro` / `kokoro/0.9.4` (`Requires-Python: >=3.10,<3.13`)
+- https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/ (first plugin / absolute-path `--patch`)
+- https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/publish (bundle `cordis.patch.yml`, `dsh.bundle`, `dsh plugin`, layer order)
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm-deepseek/README.md (`DEEPSEEK_API_KEY`)
+- https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/package.json (`engines.node`)
+- https://pypi.org/project/kokoro/0.9.4/
 - Spine `.memlog.md` version verification note
