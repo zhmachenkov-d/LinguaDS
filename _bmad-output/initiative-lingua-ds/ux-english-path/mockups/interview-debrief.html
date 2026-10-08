@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Key screen — UJ-4 Interview debrief — Paper Lamp</title>
+<style>
+/*
+  EXPERIENCE sections: Component Patterns (Readiness rows);
+  State Patterns (Interview debrief); Key Flows › UJ-4 Debrief climax;
+  Voice and Tone (устойчиво / частично / неустойчиво / не проверялось);
+  Inspiration & Anti-patterns (no row colors / no apply-for-jobs); Foundation (sparse, static).
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Iowan Old Style", "Apple Garamond", "Times New Roman", Times, serif;
+  background: #E8E2D6;
+  color: #2C2A26;
+  padding: 32px 40px 64px;
+  line-height: 1.6;
+}
+.page-note {
+  max-width: 920px;
+  margin: 0 auto 28px;
+  font-size: 13px;
+  color: #5C564C;
+  text-align: center;
+}
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: center;
+}
+.mode-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B655C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.desktop {
+  width: 920px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44,42,38,0.1);
+}
+.desktop-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+}
+.desktop-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; opacity: 0.2;
+}
+.desktop-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.4;
+}
+.desktop-body {
+  min-height: 600px;
+  padding: 48px 72px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.light .desktop { background: #F7F3EC; color: #2C2A26; border: 1px solid #D9D2C6; }
+.light .desktop-bar { background: #EDE6D8; color: #2C2A26; border-bottom: 1px solid #D9D2C6; }
+.light .desktop-body {
+  background: #F7F3EC;
+  background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #FBF8F2 0%, #F7F3EC 70%);
+}
+.light .summary { color: #2C2A26; }
+.light .meta { color: #6B655C; }
+.light .row { border-bottom: 1px solid #D9D2C6; }
+.light .row-name { color: #2C2A26; }
+.light .row-status { color: #5C564C; }
+.light .fragment { color: #6B655C; }
+
+.dark .desktop { background: #1C1A16; color: #E8E2D6; border: 1px solid #3A342C; }
+.dark .desktop-bar { background: #12100C; color: #E8E2D6; border-bottom: 1px solid #3A342C; }
+.dark .desktop-body {
+  background: #1C1A16;
+  background-image: radial-gradient(ellipse 60% 40% at 50% 0%, #24211C 0%, #1C1A16 75%);
+}
+.dark .summary { color: #E8E2D6; }
+.dark .meta { color: #9A9286; }
+.dark .row { border-bottom: 1px solid #3A342C; }
+.dark .row-name { color: #E8E2D6; }
+.dark .row-status { color: #C8C0B2; }
+.dark .fragment { color: #9A9286; }
+
+.summary {
+  font-size: 16px;
+  font-weight: 500;
+  max-width: 520px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.meta {
+  font-size: 13px;
+  margin-bottom: 32px;
+  max-width: 520px;
+  line-height: 1.55;
+}
+.rows {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 36px;
+  text-align: left;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 12px 0;
+  font-size: 14px;
+}
+.row:last-child { border-bottom: none; }
+.row-name { font-weight: 400; }
+.row-status { font-weight: 400; letter-spacing: 0.01em; white-space: nowrap; }
+.fragment {
+  font-size: 13px;
+  max-width: 480px;
+  line-height: 1.65;
+  text-align: left;
+  width: 100%;
+}
+.fragment strong {
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+  <p class="page-note">UJ-4 debrief — descriptor summary + six readiness rows. No next-step line, no row colors. Includes не проверялось.</p>
+
+  <div class="modes">
+    <section class="light">
+      <div class="mode-label">Light</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="summary">Readiness map — this take</div>
+          <div class="meta">Experience and trade-offs held under pressure; small talk and closing questions thin.</div>
+          <div class="rows">
+            <div class="row">
+              <span class="row-name">Small talk</span>
+              <span class="row-status">частично</span>
+            </div>
+            <div class="row">
+              <span class="row-name">About yourself</span>
+              <span class="row-status">устойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Experience</span>
+              <span class="row-status">устойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Skills</span>
+              <span class="row-status">частично</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Scenario</span>
+              <span class="row-status">неустойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Your questions</span>
+              <span class="row-status">не проверялось</span>
+            </div>
+          </div>
+          <div class="fragment">
+            Fragments: “We chose X because…” stalled under interrupt · Scenario answer restarted once · Skills list stayed English.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark">
+      <div class="mode-label">Dark</div>
+      <div class="desktop">
+        <div class="desktop-bar">
+          <span class="desktop-dot"></span><span class="desktop-dot"></span><span class="desktop-dot"></span>
+          <span class="desktop-title">English Path</span>
+        </div>
+        <div class="desktop-body">
+          <div class="summary">Readiness map — this take</div>
+          <div class="meta">Experience and trade-offs held under pressure; small talk and closing questions thin.</div>
+          <div class="rows">
+            <div class="row">
+              <span class="row-name">Small talk</span>
+              <span class="row-status">частично</span>
+            </div>
+            <div class="row">
+              <span class="row-name">About yourself</span>
+              <span class="row-status">устойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Experience</span>
+              <span class="row-status">устойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Skills</span>
+              <span class="row-status">частично</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Scenario</span>
+              <span class="row-status">неустойчиво</span>
+            </div>
+            <div class="row">
+              <span class="row-name">Your questions</span>
+              <span class="row-status">не проверялось</span>
+            </div>
+          </div>
+          <div class="fragment">
+            Fragments: “We chose X because…” stalled under interrupt · Scenario answer restarted once · Skills list stayed English.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

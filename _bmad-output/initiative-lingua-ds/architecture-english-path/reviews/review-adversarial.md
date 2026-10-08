@@ -1,173 +1,229 @@
 # Adversarial Review — Architecture Spine: English Path
 
-**Lens:** Construct two units one level down that each obey every AD to the letter yet still build incompatibly.  
-**Spine:** `architecture-english-path.md` (status: draft, altitude: feature)  
+**Lens:** Construct two units one level down that each obey every AD to the letter yet still build incompatibly (clashing shared-data shapes, two owners of one entity, conflicting state-mutation paths). Every pair is a hole to close with a new or tightened AD.  
+**Spine:** `architecture-english-path.md` (status: draft; AD-1…AD-11 + Consistency Conventions for UX/tone/plan/voice)  
 **Date:** 2026-10-08  
-**Verdict:** **Holes found — not ready to finalize without AD tightenings.** The spine correctly prevents peer coach negotiation and coach→store writes, but leaves shared contracts (evidence deltas, journal events, schema ownership, assess duality, channel reclaim, PathPosition mutation) as convention sketches or Deferred — which is exactly how two compliant epics diverge.
+**Prior review:** Overwritten — this assessment is of the **current** spine only (post AD-9…AD-11 and UX/voice/plan convention expand).
+
+**Verdict:** **Holes remain — not ready for final.** Prior critical forks (EvidenceItem envelope, Assess coach vs port, journal-vs-snapshot write path, closed JournalEvent *types*, channel reclaim, persistence DDL ownership) are largely closed. The spine still leaves **payload/identity contracts** and a few ownership forks open — enough for compliant epics to ship incompatible shared data and mutation paths.
 
 ---
 
 ## Method
 
-For each pair below: Unit A and Unit B are independent epics/stories one level down from this feature spine. Each cites only ADOPTED ADs + Consistency Conventions. Neither violates a Rule wording. The clash is therefore an AD hole, not an implementation mistake.
+Unit A and Unit B are independent epics/stories one level down. Each cites only ADOPTED AD Rules + Consistency Conventions. Neither violates Rule wording. Clash ⇒ AD hole (or convention that needs AD elevation).
 
-Deferred item *"Handoff/plan JSON schemas beyond convention sketch — Epic/story detail once supervisor scaffold exists"* is treated as an **open invitation to diverge**, not a safe deferral: at feature altitude, those schemas *are* the divergence points the spine exists to close.
+**Closed since prior adversarial review (not re-filed as open holes):**
 
----
-
-## Incompatibility pairs
-
-### Pair 1 — Clashing `evidence_deltas[]` / EvidenceItem shapes  
-**(vocab+SRS epic vs phonics grade epic)**
-
-| | Unit A — `epic: vocab-srs-persistence` | Unit B — `epic: phonics-grade-handoff` |
-| --- | --- | --- |
-| Obeys | AD-1, AD-4, AD-6; Handoff result convention | Same |
-| Builds | Delta = `{ lemma, srs_box: 0..5, due_iso, confidence: 0..1 }` committed into snapshot as SRS rows | Delta = `{ skill_tag, status, score, attempt_id }` committed into snapshot as EvidenceItem statuses |
-
-**Clash:** Shared store entity “evidence / durable learner skill state” has two incompatible shapes. Supervisor “merge/commit” has no merge algebra (union? keyed upsert? status lattice?). Vocab may never emit `confirmed|unstable|goes into review`; phonics may never emit SRS fields — yet both claim to be `evidence_deltas[]`.
-
-**Why ADs don’t catch it:** AD-1 only forbids coaches writing the store; AD-4 names evidence *statuses* on the snapshot but not the item schema; convention lists vocabulary for *status words*, not payload fields; handoff sketch leaves `evidence_deltas[]` untyped. Deferred explicitly postpones the JSON schema.
-
-**Hole to close:** Tighten AD-4 (or new AD-9) with a single EvidenceItem / delta contract: required keys, status enum as sole durable skill state, where SRS schedule lives (snapshot field vs journal-only), and supervisor merge rules (id key + status lattice).
+| Prior pair | Closed by |
+| --- | --- |
+| Clashing `evidence_deltas` / EvidenceItem envelopes | AD-9 |
+| Assess coach vs Assess port dual home | AD-10 |
+| Snapshot direct patch vs journal projection | AD-4 |
+| Freeform vs typed JournalEvent *type* set | AD-4 |
+| Dual mouths / reclaim vs handback | AD-3 |
+| DDL in `ports/learner-store` vs `persistence/` | AD-5 + Structural Seed |
+| Within-level hard-block vs Level gates (principle) | AD-11 |
 
 ---
 
-### Pair 2 — Two owners of one entity: Assess  
-**(coach/assess story vs ports/assess story)**
+## Incompatibility pairs (current spine)
 
-| | Unit A — `story: coach-assess-cefr` | Unit B — `story: port-assess-adapter` |
+### Pair 1 — Clashing JournalEvent / snapshot projection payloads  
+**(journal-projector epic vs level-advance epic)**  
+*Severity: Critical — shared-data shape*
+
+| | Unit A — `epic: supervisor-journal-projector` | Unit B — `epic: fr14-level-advance` |
 | --- | --- | --- |
-| Obeys | AD-5 (“thin Assess”), AD-6 (supervisor → assess coach + Assess port), AD-7 (rubrics with assess) | Same wording |
-| Builds | CEFR / gate evaluation + rubric loading live in `coaches/assess/`; port is a trivial LLM/prompt shim | Rubric eval + readiness computation live in `ports/assess/` adapter; `coaches/assess/` is a façade that calls the port |
+| Obeys | AD-4 (closed types; snapshot = projection; payload calibration under `schema_version`); AD-1 | Same |
+| Builds | `level_advance` payload = `{ from_level, to_level, gate_ids_passed[], schema_version: 1 }`; `PathPosition` projected as `{ level, topic_id, lesson_ordinal }` | `level_advance` payload = `{ cefr, reason, readiness_snapshot, schema_version: 1 }`; `PathPosition` = `{ cefr, gate_cursor, unfinished_block_ids[] }` |
 
-**Clash:** One conceptual entity (assessment / gate readiness) has two legitimate homes. Capability map says “supervisor + assess + content gates”; structural seed lists both `coaches/assess/` and `ports/assess/`. “Thin” is not defined (I/O only? scoring? rubric I/O?).
+**Clash:** Same closed event *types* and same ER entities (`PathPosition`, `NextStepPlan`) with incompatible payloads. Resume, finale fact comparison, and cross-epic projectors cannot interoperate. Both claim AD-4 compliance via independent `schema_version` bumps that never coordinated.
 
-**Why ADs don’t catch it:** AD-5 names the port and says “thin” without a responsibility cut. AD-7 binds rubrics to “assess” without saying coach vs port. AD-6 diagram shows both `As` and `AC` under supervisor with no exclusive owner.
+**Why ADs don’t catch it:** AD-4 explicitly defers “payload field calibration” and Deferred repeats it. Closing the *type set* without a minimal required payload envelope (or a single spine-owned schema id + required keys per type) invites the exact fork the type lock was meant to prevent. AD-4 *binds* PathPosition / NextStepPlan but never shapes them.
 
-**Hole to close:** New or tightened AD: **Assess coach owns rubric interpretation and readiness_rows; Assess port is I/O only** (model call / file read) — or the inverse. Delete ambiguity; one writer of readiness semantics.
+**Hole to close:** Tighten AD-4 (or new AD-12 Shared contracts): per JournalEvent type, required payload keys + PathPosition / NextStepPlan / ProfileSnapshot field envelopes owned by the spine (versioned once). Defer only *optional* additive fields and numeric thresholds — not the identity of shared projection fields.
 
 ---
 
-### Pair 3 — Conflicting PathPosition / level-advance mutation paths  
-**(level-advance epic vs return/resume epic)**
+### Pair 2 — Two minting authorities for one entity: EvidenceItem `id`  
+**(phonics-handoff story vs assess-readiness story)**  
+*Severity: Critical — two owners / identity*
 
-| | Unit A — `epic: fr14-level-advance` | Unit B — `epic: fr7-return-resume` |
+| | Unit A — `story: phonics-evidence-deltas` | Unit B — `story: assess-readiness-join` |
 | --- | --- | --- |
-| Obeys | AD-1 (supervisor commits), AD-4 (supervisor projects journal→snapshot), AD-7 (gates in content pack) | Same |
-| Builds | On assess handback, supervisor **immediately** patches `ProfileSnapshot.PathPosition` from `readiness_rows` (snapshot is live) | PathPosition changes **only** via append of `JournalEvent{type:'level_advance'}` then batch projection at finale / session close |
+| Obeys | AD-9 (deltas are EvidenceItem shape or status-only patches keyed by `id`; supervisor merges by `id`); Ids & time convention (“stable within learner”); AD-1 | Same |
+| Builds | Coach mints `id` = `hash(kind + contrast_pair_text)` on first propose; supervisor upserts as-is | Coach returns status patches with content-pack can-do keys; supervisor allocates opaque UUIDs on first `evidence_propose`; `readiness_rows` key by pack gate ids |
 
-**Clash:** Same entity, two legal mutation paths. Mid-session crash: Unit A’s learner is advanced; Unit B’s learner is not. Finale fact comparison (AD-4 bind) disagrees with live snapshot depending on which epic shipped first.
+**Clash:** Duplicate or orphan EvidenceItems; assess readiness cannot join phonics/vocab evidence; anti-game / mistake flows disagree on identity. Merge-by-id is well-defined algebra over an undefined namespace.
 
-**Why ADs don’t catch it:** AD-4 says supervisor alone *projects* journal→snapshot but never says snapshot is **journal-projected-only** vs **directly writable**. AD-1 allows supervisor commits without specifying commit medium (direct snapshot write vs journal append then project).
+**Why ADs don’t catch it:** AD-9 specifies merge *by* id, not **who may create** an id, what catalog ids are drawn from, or how `kind` relates to content-pack / rubric keys. Convention requires stability, not authority.
 
-**Hole to close:** Tighten AD-4: **all durable mutations are journal appends; snapshot is a pure projection** (or: snapshot may be patched only for listed fields, with mandatory journal twin). Name PathPosition / EvidenceItem / NextStepPlan write path explicitly.
+**Hole to close:** AD-9: single id authority — e.g. content-pack / rubric stable `evidence_key` as `id` (coaches never mint), **or** supervisor-only allocation with deltas carrying `evidence_key` separately. Document join rule from EvidenceItem → readiness / gates.
 
 ---
 
-### Pair 4 — Clashing SessionJournal / JournalEvent shapes  
-**(session-journal epic vs interview-handoff epic)**
+### Pair 3 — Clashing `readiness_rows` / gate evaluation shapes  
+**(assess-coach epic vs supervisor-level-advance epic)**  
+*Severity: High — shared-data shape*
 
-| | Unit A — `epic: journal-schema` | Unit B — `epic: interview-genre-block` |
+| | Unit A — `epic: coaches-assess-semantics` | Unit B — `epic: supervisor-enforce-gates` |
 | --- | --- | --- |
-| Obeys | AD-3, AD-4 (“attempts, handoffs, finale facts”); Ids & time convention | Same |
-| Builds | Strict discriminated union: `{ type: 'attempt'\|'handoff'\|'finale'\|'phase', ts, payload }` with typed payloads | Appends freeform `{ ts, role, text, meta?: object }` transcript lines; handoff “structured result” stuffed into `meta` occasionally |
+| Obeys | AD-10 (assess owns rubric/gate/readiness semantics; supervisor commits `level_advance`); AD-11; Handoff result convention | Same |
+| Builds | `readiness_rows[]` = `{ dimension: 'B1.speaking', status: 'threshold_reached'\|'open', score: 0..1 }` | Expects `{ gate_id, critical: bool, pass: bool, evidence_ids[] }` from content-pack gate ids |
 
-**Clash:** Resume, finale fact comparison, and audit trail cannot interoperate. Both are append-only local journals with the named concerns present somewhere.
+**Clash:** AD-10 assigns *ownership* of semantics but not the **wire shape** supervisor must consume. Level-advance and UJ-3 overlay epics diverge while both cite assess as sole semantic owner.
 
-**Why ADs don’t catch it:** AD-4 lists *contents* not *schema*. Convention timestamps/ids only. Deferred again parks handoff/plan JSON — and by implication journal event schema — at epic level.
+**Why ADs don’t catch it:** Handoff convention lists `readiness_rows?` untyped. AD-7 / AD-11 say content pack names critical criteria and assess evaluates — no row schema. Ownership without contract ≠ interoperability.
 
-**Hole to close:** AD-4 must fix a closed JournalEvent type set (or versioned schema id in `persistence/`) before epics land. Pull the Deferred schema item **up** into an AD; leave only field-level calibration deferred.
+**Hole to close:** Elevate into AD-10 (or AD-9/12): closed `ReadinessRow` / gate-evaluation result shape; map to content-pack gate ids; supervisor may only commit `level_advance` from that shape.
 
 ---
 
-### Pair 5 — Dual speech/channel reclaim during handoff  
-**(speaking-interview story vs supervisor-finale story)**
+### Pair 4 — Conflicting Plan / orientation mutation paths  
+**(orientation epic vs path-map epic)**  
+*Severity: High — conflicting state-mutation paths*
 
-| | Unit A — `story: interview-handoff` | Unit B — `story: supervisor-phase-timer` |
+| | Unit A — `epic: uj2-orientation-strip` | Unit B — `epic: fr22-path-available` |
 | --- | --- | --- |
-| Obeys | AD-3 (hand off channel for genre block; handback returns structured results); AD-6 (active coach may use SpeechIn/Out) | Same |
-| Builds | Coach holds exclusive SpeechOut until it emits handback; supervisor is mute and does not reclaim | Supervisor owns a block `length_min` timer; on expiry reclaims SpeechOut and may speak orientation/finale while coach may still be producing audio or a late handback |
+| Obeys | AD-1 (supervisor names plan); Plan object convention (`level` · `topic` · `session_goal` · `available` · `recommended`); AD-7; AD-11 | Same |
+| Builds | On return, supervisor invents learner-facing `available` / `recommended` as free-text strip labels from last finale notes; journals `plan_set` with those strings; content pack unused for availability | Supervisor copies `available` / `recommended` from content-pack lesson-graph edges + evidence queue; `plan_set` payload holds structured `{ lesson_id, genre, length_min }`; strip renders labels from ids |
 
-**Clash:** Dual mouths / conflicting channel ownership transition — the exact failure AD-3’s Prevents clause names — while both units stay inside the Rule’s wording (“may hand off”; “on handback”).
+**Clash:** Same Plan keys, incompatible value types and computation owners. Content pack “owns path structure” (AD-7) vs supervisor “alone names the plan” (AD-1) without a cut: who **computes** availability vs who **utters** it. AD-11 forbids within-level `not available` marking but does not say whether availability is pack-derived or supervisor-authored prose.
 
-**Why ADs don’t catch it:** AD-3 defines who *may* speak in which *mode*, not the **state machine** (enter handoff → exclusive owner → reclaim triggers → late handback discard/queue). AD-6 only gates *which* coaches may touch ports, not preemption.
+**Why ADs don’t catch it:** Plan convention locks *key names* and ≤30s budget, not types, id references, or computation authority. `plan_set` payload is under the AD-4 calibration deferral.
 
-**Hole to close:** Tighten AD-3 with handoff lifecycle: exclusive channel owner token; reclaim only on handback or explicit abort; late results after reclaim are dropped or journaled as `superseded`, never spoken.
+**Hole to close:** Tighten Plan convention → AD (or AD-1 appendix): `available` / `recommended` are structured refs into the content pack (not free prose); supervisor selects among pack-legal options; utterance/copy is presentation. Align with Evidence vocabulary overlay enums vs strip labels explicitly.
 
 ---
 
-### Pair 6 — Two owners of LearnerStore schema  
-**(ports/learner-store epic vs persistence/ migrations epic)**
+### Pair 5 — Two lifetimes for one entity: session artifacts / generated surface  
+**(generated-lesson-surface epic vs uj2-resume epic)**  
+*Severity: High — shared-data lifetime / mutation path*
 
-| | Unit A — `epic: learner-store-port` | Unit B — `epic: sqlite-persistence` |
+| | Unit A — `epic: ad7-lesson-surface` | Unit B — `epic: fr29-resume-finale` |
 | --- | --- | --- |
-| Obeys | AD-2 (both folders exist), AD-4, AD-5 (LearnerStore port + SQLite adapter), AD-8 | Same |
-| Builds | DDL + migrations live beside the SQLite adapter under `ports/learner-store/` | Canonical schema + migrations live in `persistence/`; port adapter is a thin repository over migrated tables |
+| Obeys | AD-7 (generated-first surface); AD-4 journal types; Handoff `artifacts?` | Same |
+| Builds | Contrast pairs / mock prompts live in process memory for the block; handoff omits `artifacts` (optional); next session regenerates | Requires prior surface in journal (`attempt` / custom payload / `artifacts`) for finale fact comparison and mid-path continue |
 
-**Clash:** Two owners of one entity (store schema / migrations). Bundle builds break or silently fork tables (`evidence` vs `evidence_items`, journal as table vs JSON file).
+**Clash:** Shared “what the learner just practiced” has no retention rule. Finale / resume epics break against generated-surface epic. Both obey optional `artifacts?` and AD-7 generation policy.
 
-**Why ADs don’t catch it:** Structural seed lists **both** `ports/learner-store/` and `persistence/` with no ownership AD. AD-5 binds the port; AD-4 binds snapshot+journal conceptually; neither assigns schema authority.
+**Why ADs don’t catch it:** AD-7 decides generation, not durability. AD-4’s closed types omit an `artifact` / `surface` event; handoff leaves artifacts optional with no “must journal if resume/finale depends on it” rule.
 
-**Hole to close:** AD-2 or AD-5: **`persistence/` owns schemas/migrations; `ports/learner-store` is the only runtime API** coaches/supervisor call. Forbid DDL in the adapter epic.
+**Hole to close:** AD-4 or AD-7: any generated surface that finale, resume, or evidence ids depend on **must** be journaled under a named event/payload key; pure display fluff may be ephemeral — draw the line.
 
 ---
 
-### Pair 7 — Conflicting evidence identity authority  
-**(mistake/evidence story vs assess readiness story)**
+### Pair 6 — Dual isolation mechanisms for LearnerStore  
+**(multi-learner-files epic vs multi-learner-schema epic)**  
+*Severity: High — two owners of isolation entity*
 
-| | Unit A — `story: mistake-recorder` | Unit B — `story: assess-readiness-rows` |
+| | Unit A — `epic: ad8-per-file-db` | Unit B — `epic: ad8-schema-namespace` |
 | --- | --- | --- |
-| Obeys | AD-1 (supervisor commits); convention “evidence item ids stable within learner”; coach ids / tool names | Same |
-| Builds | Coaches mint `evidence_item_id` in deltas (e.g. hash of skill_tag); supervisor persists as-is | Coaches return skill keys only; supervisor allocates opaque ids; `readiness_rows` key by CEFR can-do ids from content pack |
+| Obeys | AD-8 (“one SQLite file **(or schema namespace)** per learner id”); AD-5; AD-2 | Same |
+| Builds | `persistence/learners/{id}.sqlite`; host switch opens a different file | Single `english-path.sqlite` with `learner_{id}_*` schemas / attached namespaces |
 
-**Clash:** Duplicate or orphan EvidenceItems; assess rows don’t join phonics/vocab evidence; anti-game / mistake flows (capability map) disagree on identity.
+**Clash:** Backup, migration, LearnerStore adapter, and host switch APIs are incompatible. Both are letter-perfect AD-8.
 
-**Why ADs don’t catch it:** Convention requires stability, not **who allocates**. Content-pack gate ids vs coach skill tags vs evidence ids are three namespaces with no join rule.
+**Why ADs don’t catch it:** The parenthetical **or** is an unresolved fork written into the Rule.
 
-**Hole to close:** AD-4/conventions: single id authority (supervisor or content-pack stable ids); deltas reference `evidence_key` from content/rubric catalog; no coach-minted store ids.
+**Hole to close:** AD-8 pick one v1 isolation mechanism (recommend: one file per learner id — matches Structural Seed “per-learner DB files”). Park the alternate as Deferred.
 
 ---
 
-### Pair 8 — Generated lesson surface: ephemeral vs durable artifact  
-**(content-surface epic vs resume epic)**
+### Pair 7 — Conflicting voice-adaptation journal paths  
+**(speech-threshold epic vs phonics-unstable epic)**  
+*Severity: Medium — conflicting state-mutation paths*
 
-| | Unit A — `epic: generated-lesson-surface` | Unit B — `epic: uj2-return-resume` |
+| | Unit A — `story: fr33-adaptive-thresholds` | Unit B — `story: accept-but-low-unstable` |
 | --- | --- | --- |
-| Obeys | AD-7 (generated-first lesson surface); AD-4 journal | Same |
-| Builds | Surface held in process memory / content cache; new generation each session; handoff `artifacts?` optional and discarded | Requires prior contrast pairs / mock prompts in journal `artifacts` to compare finale facts and continue mid-path |
+| Obeys | Voice adaptation + Config conventions; AD-4; AD-1; AD-9 | Same |
+| Builds | Every accept-but-low / rejection-rate nudge is a `prefs_set` only; thresholds on `ProfileSnapshot.prefs.stt_*`; evidence unchanged until handback | Every accept-but-low is `attempt` + `evidence_propose` → `unstable`; thresholds on `ProfileSnapshot.voice_adaptation`; `prefs_set` unused for STT |
 
-**Clash:** Shared-data lifetime for “what the learner just practiced” unspecified. Resume and finale fact comparison diverge.
+**Clash:** Same FR-33 behaviors, two legal journal paths and two snapshot field homes. Audit, resume, and projector logic fork. Convention says `prefs_set` **and/or** `attempt` + `evidence_propose` — the **and/or** is the hole.
 
-**Why ADs don’t catch it:** AD-7 decides generation policy, not persistence. Handoff `artifacts?` is optional with no retention rule. AD-4 journal list omits generated surface.
+**Why ADs don’t catch it:** Voice adaptation is convention-only (memlog chose not to add AD-12). “And/or” plus unnamed snapshot fields leave mutation path and field home open.
 
-**Hole to close:** AD-4 or AD-7: session-generated surface that affects resume/finale **must** be journaled (artifact event); pure display fluff may be ephemeral — say which is which.
+**Hole to close:** New short AD or elevate Voice adaptation: required event sequence for accept-but-low; single snapshot field path for adaptive thresholds; forbid the unused alternate in v1.
+
+---
+
+### Pair 8 — Overlapping EvidenceItem `kind` for one skill fact  
+**(speaking-interview story vs assess-cefr story)**  
+*Severity: Medium — clashing shared-data / dual writers of meaning*
+
+| | Unit A — `story: interview-block-evidence` | Unit B — `story: cefr-dimension-evidence` |
+| --- | --- | --- |
+| Obeys | AD-9 closed `kind` set; AD-10 assess semantics; AD-3 speaking handoff | Same |
+| Builds | Speaking coach proposes `kind=interview_block` per mock turn (status unstable/confirmed) | Assess proposes `kind=cefr_dimension` for the same interview skill; readiness joins only `cefr_dimension` |
+
+**Clash:** Two durable items for one learner fact; status lattices diverge; supervisor merge-by-id never unifies them. Both kinds are explicitly legal.
+
+**Why ADs don’t catch it:** AD-9 lists kinds but not exclusivity, parent/child, or “interview_block is session artifact → assess rolls up to cefr_dimension” rules.
+
+**Hole to close:** AD-9: kind cardinality / rollup rules (which kinds are atomic skill state vs session-scoped blocks); assess-owned rollup before commit if needed.
+
+---
+
+### Pair 9 — Fatigue / early-stop evidence commit policy  
+**(fatigue-reclaim story vs partial-block-grade story)**  
+*Severity: Medium — conflicting mutation path under Tone pack*
+
+| | Unit A — `story: tone-fatigue-deferral` | Unit B — `story: phonics-partial-handback` |
+| --- | --- | --- |
+| Obeys | Tone pack (fatigue / early-stop must not write Unstable *solely* for ending early); AD-3 reclaim; AD-1/AD-4 | Same |
+| Builds | On fatigue reclaim, supervisor journals `handoff_reclaim` + `session_end`; **drops** all pending `evidence_deltas` from the open block | On fatigue reclaim, supervisor still commits deltas from completed micro-turns (not “solely” for ending — attempts already happened), including `unstable` |
+
+**Clash:** Same stop produces different durable evidence. Both parse Tone pack without violating AD wording.
+
+**Why ADs don’t catch it:** Tone pack forbids Unstable *solely for ending early*, not whether partial-block proposals commit. AD-3 reclaim wins on channel, silent on pending-delta disposition.
+
+**Hole to close:** AD-3 or Tone→AD: on stop/fatigue reclaim, pending deltas policy — commit earned attempts / drop all / commit only `confirmed` — pick one.
+
+---
+
+### Pair 10 — Content pack wire format fork  
+**(content-pack epic vs assess-gates epic)**  
+*Severity: Medium — clashing shared-data shape*
+
+| | Unit A — `epic: versioned-path-pack` | Unit B — `epic: assess-reads-gates` |
+| --- | --- | --- |
+| Obeys | AD-7 (versioned content pack owns path/gates/templates) | Same |
+| Builds | Single `content/path-pack.v1.json` with embedded gate matrices | TS modules under `content/path/` + separate `content/gates/*.yaml`; assess imports TS |
+
+**Clash:** “Versioned content pack” is a concept, not a load contract. Assess and path-map epics disagree on discovery, versioning, and gate id location.
+
+**Why ADs don’t catch it:** AD-7 names ownership layers, not file/schema contract. Deferred gate *matrices* still assume a shared pack shape that doesn’t exist.
+
+**Hole to close:** AD-7 appendix: one pack manifest format + version field + where gate ids live; assess/supervisor load only through that manifest.
 
 ---
 
 ## Cross-cutting diagnosis
 
-| Pattern | Spine weakness |
+| Pattern | Current spine weakness |
 | --- | --- |
-| Clashing shared-data shapes | Conventions sketch types; Deferred parks schemas at epic level |
-| Two owners of one entity | Assess coach vs Assess port; `persistence/` vs learner-store adapter |
-| Conflicting state-mutation paths | Snapshot direct write vs journal projection; channel reclaim vs handback |
+| Clashing shared-data shapes | Types/keys locked; **payloads**, PathPosition, Plan values, readiness_rows, content-pack wire still open; AD-4/`schema_version` explicitly invites uncoordinated payload forks |
+| Two owners of one entity | EvidenceItem **id minting**; Plan **availability computation** (supervisor prose vs content pack); Learner isolation **file vs namespace** (AD-8 `or`) |
+| Conflicting state-mutation paths | Voice-adapt `prefs_set` and/or attempt+propose; fatigue pending-delta disposition; artifacts optional vs resume-required |
 
-**What the spine already gets right (not holes):** coach↔coach imports forbidden; coaches never write LearnerStore; single bundle; multi-learner isolation pre-session; no gamification vocab; speech ports not Harness-native. Those Prevents clauses hold under adversarial construction.
+**Still solid (no adversarial fork that obeys the Rules):** coaches never write LearnerStore; no coach↔coach deps; single `english-path` bundle; Assess coach vs port cut (AD-10); journal-only durable writes at the *type* layer; channel grant/reclaim with reclaim wins; SRS-in-EvidenceItem-payload (no parallel SRS schema); within-level must not hard-block via `level_advance`; UX sources win on chrome; no gamification vocabulary.
 
 ---
 
-## Minimal AD tightenings (recommended)
+## Minimal tightenings (recommended)
 
-Priority order — smallest text that closes the pairs above:
+Priority — smallest AD text that closes the pairs:
 
-1. **AD-4 (critical):** Snapshot is a **pure projection** of the append-only journal (or list any direct-write exceptions). Close JournalEvent type set + EvidenceItem/delta schema (required fields, status lattice, SRS field home). Single **evidence_key** authority. Session artifacts needed for resume/finale are journal events.
-2. **AD-3 (high):** Handoff **lifecycle** — exclusive channel owner, reclaim only on handback/abort, late handback policy.
-3. **AD-5 + structural note (high):** Split Assess: coach = rubric/readiness semantics; port = I/O. **`persistence/` owns DDL/migrations**; learner-store port is API-only.
-4. **Lift Deferred schemas (high):** Remove “Handoff/plan JSON schemas → epic detail”; replace with AD-level contracts (plan object fields, handoff result, journal events). Keep only *threshold numbers* / gate matrices deferred.
-5. **Conventions (medium):** Define supervisor merge algebra for `evidence_deltas[]` (keyed upsert + status transition table).
-
-Optional new **AD-9 — Shared contracts are spine-owned:** plan, handoff result, journal events, evidence items versioned in `persistence/` or `content/schemas/`; epics may extend with additive optional fields only behind a schema version bump.
+1. **AD-4 / new AD-12 Shared contracts (critical):** Minimal required payloads for each JournalEvent type; PathPosition + NextStepPlan + ProfileSnapshot envelopes; single spine `schema_version` owner. Narrow Deferred to optional fields / numeric thresholds only.
+2. **AD-9 (critical):** EvidenceItem id authority + join to gates/readiness; kind rollup/exclusivity (Pair 8 can ride along).
+3. **AD-10 (high):** Closed `ReadinessRow` / gate-evaluation result shape.
+4. **AD-1 or Plan→AD (high):** `available` / `recommended` structured pack refs; supervisor selects, does not invent parallel availability models.
+5. **AD-4/AD-7 (high):** Journal retention rule for resume/finale-affecting generated surface / artifacts.
+6. **AD-8 (high):** Pick one isolation mechanism for v1.
+7. **Voice adaptation → AD or tighten convention (medium):** One journal path + one snapshot field home.
+8. **AD-3 + Tone (medium):** Pending-delta policy on fatigue/stop reclaim.
+9. **AD-7 (medium):** Content pack manifest / wire contract.
 
 ---
 
@@ -175,16 +231,37 @@ Optional new **AD-9 — Shared contracts are spine-owned:** plan, handoff result
 
 | Severity | Count | Pairs |
 | --- | --- | --- |
-| Critical | 3 | 1 (delta/EvidenceItem shape), 3 (PathPosition mutation), 4 (JournalEvent shape) |
-| High | 3 | 2 (Assess dual owner), 5 (channel reclaim), 6 (schema dual owner) |
-| Medium | 2 | 7 (id authority), 8 (generated surface lifetime) |
+| Critical | 2 | 1 (Journal/PathPosition payloads), 2 (EvidenceItem id authority) |
+| High | 4 | 3 (readiness_rows), 4 (Plan availability path), 5 (artifacts lifetime), 6 (AD-8 isolation or) |
+| Medium | 4 | 7 (voice-adapt path), 8 (kind overlap), 9 (fatigue deltas), 10 (content pack wire) |
 
-**Gate recommendation:** Do **not** set spine `status: final` until at least tightenings 1–4 land (or equivalent new ADs). Pairs 7–8 can ship as convention bullets if AD-4 absorbs id + artifact retention.
+**Gate recommendation:** **Not ready for final.** Do not set `status: final` until at least tightenings 1–2 land (payload envelopes + id authority). Prefer also 3–6 before independent epic builders start — otherwise “closed types” create false confidence while shared projection still forks.
 
 ---
 
 ## Out of scope / non-findings
 
-- Stack pin freshness (other finalize lens).
-- Exact gate matrices / interview run counts (legitimately Deferred if mutation *path* is fixed).
-- Writing coach absence, Cordis single-bundle choice, local-only envelope — no adversarial fork found that still obeys ADs.
+- Stack pin freshness / Harness RC churn (other finalize lens).
+- Exact critical gate matrices & interview run counts (legitimately Deferred **if** readiness_rows + PathPosition envelopes exist).
+- Writing coach absence, Cordis single-bundle, local-only envelope, Paper Lamp token restatement — no adversarial fork found that still obeys ADs.
+- Prior-review pairs listed under “Closed since prior” — not re-opened unless the current wording regresses (it does not).
+
+---
+
+## Post-fix delta
+
+**Re-assessment date:** 2026-10-08  
+**Scope:** Critical/high pairs 1–6 only, against updated spine (AD-1…AD-12).
+
+| Pair | Severity | Status | Why |
+| --- | --- | --- | --- |
+| 1 — JournalEvent / PathPosition payloads | Critical | **CLOSED** | AD-12 owns single `schema_version` plus required envelopes for PathPosition, NextStepPlan, ProfileSnapshot, and every closed JournalEvent type (incl. `level_advance`). |
+| 2 — EvidenceItem `id` authority | Critical | **CLOSED** | AD-9 sets `id` = pack/rubric `evidence_key`; coaches never mint; supervisor upserts by that key. |
+| 3 — `readiness_rows` / gate shapes | High | **CLOSED** | AD-10 closes GateEval and ReadinessRow wire shapes; supervisor may commit advance/readiness only from them. |
+| 4 — Plan availability mutation path | High | **CLOSED** | AD-1 + AD-12: `available`/`recommended` are pack `LessonRef`s; supervisor selects among pack-legal options, no free-text availability model. |
+| 5 — Generated surface / artifacts lifetime | High | **CLOSED** | AD-4 requires journaling any generated surface that finale/resume/evidence ids depend on; AD-12 names `artifact_ref(s)` keys. |
+| 6 — LearnerStore isolation fork | High | **CLOSED** | AD-8 picks one SQLite file per learner id; schema-namespace is Deferred. |
+
+**Still-open critical/high:** none.
+
+**Gate (pairs 1–6):** ready-for-final **yes** (medium pairs 7–10 not re-assessed here).
