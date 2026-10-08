@@ -1,5 +1,4 @@
 [tickets]
 store = "github"
-# Empty repo = origin of the current checkout (zhmachenkov-d/LinguaDS)
-repo = ""
+repo = "zhmachenkov-d/LinguaDS"
 key = ""
