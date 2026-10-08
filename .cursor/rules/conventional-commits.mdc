@@ -23,7 +23,14 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 - Breaking changes: `!` after type/scope and/or a `BREAKING CHANGE:` footer
 - Optional body after a blank line for why/context
 - PR titles use the same format as the commit subject
-- PR merge messages (squash/merge commit subject) use the same Conventional Commits format as the PR title; do not use GitHub defaults like `Merge pull request #123 from ...`
+
+## PR merge messages
+
+The merge commit subject on `main` (squash or merge) **must** use Conventional Commits — same format as the PR title.
+
+- Prefer matching the PR title exactly (e.g. `docs: add English Path UX design and experience specs`)
+- When using `gh pr merge`, pass an explicit subject (`--subject` / equivalent); never accept GitHub’s default
+- Forbidden subjects: `Merge pull request #123 from …`, `Merge branch '…'`, bare PR numbers, or any non-conventional default
 
 ## Branch protection
 
@@ -34,14 +41,16 @@ Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `buil
 ## Examples
 
 ```text
-# ✅ GOOD
+# ✅ GOOD (commits, PR titles, and merge subjects)
 feat(lessons): add spaced repetition queue
 fix: correct TTS timeout handling
 feat(api)!: remove legacy lesson schema
+docs: add English Path UX design and experience specs
 
 # ❌ BAD
 Added new feature
 Update stuff.
 FEAT: New API
 Merge pull request #42 from alice/feat-lessons
+Merge branch 'docs/english-path-ux'
 ```
