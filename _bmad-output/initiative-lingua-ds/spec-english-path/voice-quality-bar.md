@@ -1,12 +1,20 @@
 ---
 title: "English Path — A0 RU L1 voice quality bar"
 owned_by: bmad-spec
-derived_from: prd-english-path FR-33 / §5.6; prd addendum STT/TTS depth
+derived_from: prd-english-path FR-33 / §5.6; prd addendum STT/TTS depth; architecture Voice adaptation (V1)
 ---
 
 # A0 RU L1 voice quality bar (STT / TTS)
 
 Product-locked defaults for Self-check and phonics. Thresholds are **configurable and adaptive per Learner** — do not punish accent; do not block progress with false rejects. Millisecond latency budgets are **not** locked (architecture after Self-check instrumentation).
+
+## Ownership (V1)
+
+- **SpeechIn / SpeechOut** report scores, accept bands, and fail flags only — they do not own learner evidence or thresholds.
+- **Coaches** may propose evidence deltas; **supervisor** journals commits.
+- **Accept-but-low path (only):** journal `attempt` (band=accept_low) then `evidence_propose` → **Unstable** — never failure.
+- **Threshold adapt path (only):** journal `prefs_set` patching profile `voice_thresholds`.
+- TTS Self-check phoneme fail → supervisor selects fallback voice/human reference for that item; text channel remains valid.
 
 ## Principles
 
