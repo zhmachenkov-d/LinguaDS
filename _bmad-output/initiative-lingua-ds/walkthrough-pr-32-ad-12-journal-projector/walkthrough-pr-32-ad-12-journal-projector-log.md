@@ -253,3 +253,12 @@ Session: ecc168dd-594b-4201-b40a-aca561eaf9e3 · Timestamp: 2026-10-09T21:48:00+
 - Result: pending push
 - Evidence: english-path src + walkthrough-pr-32 folder
 - Open: merge PR #32 after push (ask user)
+
+## 29 — wrap-up — pushed
+
+Session: ecc168dd-594b-4201-b40a-aca561eaf9e3 · Timestamp: 2026-10-09T21:49:00+03:00
+
+- Action: Pushed e4e349c to feat/1-2-ad-12-journal-projector
+- Result: Review fixes + walkthrough on PR #32. Working tree clean after push except this log append if uncommitted.
+- Evidence: https://github.com/zhmachenkov-d/LinguaDS/pull/32 ; commit e4e349c
+- Open: merge PR #32?
