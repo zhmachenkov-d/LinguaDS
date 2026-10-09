@@ -7,12 +7,7 @@ type: epic
 title: "A0 Phonics and voice"
 parent: initiative-lingua-ds
 covers: [CAP-4, CAP-8]
-after:
-  [
-    epic-platform-substrate,
-    epic-first-launch-session,
-    epic-return-session-shell,
-  ]
+after: [epic-platform-substrate, epic-first-launch-session, epic-return-session-shell]
 assignee: ""
 risk: high
 ---
