@@ -43,5 +43,5 @@ CAP-1 only. Thin first Phonics is a learning-act MVP; full A0 phonics + CAP-8 vo
 
 ## Notes
 
-- Waits on epic-platform-substrate because: installable bundle, LearnerStore journal/projection, speech ports for prefs/voice-or-text.
+- Waits on epic-platform-substrate because: 1.7 Session-ready installable packaging (bundle + LearnerStore journal/projection + speech ports).
 - Decision: tracer bullet for the initiative is this epic’s UJ-1 path (2026-10-08).

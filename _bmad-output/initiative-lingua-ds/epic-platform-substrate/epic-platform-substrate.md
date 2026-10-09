@@ -45,3 +45,9 @@ Platform baseline: scaffold, ports, persistence, sidecar — not Session UX, not
 
 - Decision: opening platform epic; empty covers; cite AD-2/5/8/12 on requirements at inception (2026-10-08).
 - Unknown: exact Harness 0.2.0-rc.2 / Cordis pin stability at implement time — re-pin allowed per spec Assumptions; settle in first stories.
+- Decision: inception tracer is full-layer (bundle load + thin journal/projection + speech band via sidecar) (2026-10-09).
+- Decision: Harness pin + load is hitl on the tracer; speech deepened next after tracer (2026-10-09).
+- Decision: real SpeechIn (faster-whisper) and SpeechOut (Kokoro) adapters ship in this epic behind ports (2026-10-09).
+- Decision: sequencing — tracer first; then parallel lanes persistence (AD-12 → multi-learner), speech (sidecar+SpeechIn → SpeechOut), Assess-IO stub; Session-ready packaging joins; refactor sweep; E2E suite (2026-10-09).
+- Decision: tracer bullet is entry 1 (Harness pin+load hitl + thin journal/projection + sidecar speech band stubs); speech adapters deepen in place; speech must not touch learner SQLite; thin LearnerStore on tracer, AD-12 completed by entry 2 (2026-10-09).
+- Decision: approved 9-story breakdown written to tickets.toml (2026-10-09).

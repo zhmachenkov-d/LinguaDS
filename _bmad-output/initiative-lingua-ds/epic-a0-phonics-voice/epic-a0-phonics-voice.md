@@ -48,7 +48,7 @@ CAP-4 + CAP-8 product success. Speech ports/sidecar owned by platform; this epic
 
 ## Notes
 
-- Waits on epic-platform-substrate because: speech sidecar + SpeechIn/Out ports.
+- Waits on epic-platform-substrate because: 1.5 SpeechOut Kokoro adapter (sidecar + SpeechIn/Out ports).
 - Waits on epic-first-launch-session because: session handoff lifecycle + thin phonics to deepen.
 - Waits on epic-return-session-shell because: Self-check pattern + session shell (collision fix, 2026-10-08).
 - Decision: CAP-8 primary covers here; ports stay in platform (2026-10-08).

@@ -11,7 +11,7 @@ id = 2
 slug = "epic-first-launch-session"
 title = "First-launch Session"
 covers = ["CAP-1"]
-after = [{ epic = 1, needs = "installable bundle, LearnerStore journal/projection, speech ports usable for prefs/voice-or-text" }]
+after = [{ epic = 1, needs = "1.7 Session-ready installable packaging (bundle + LearnerStore journal/projection + speech ports)" }]
 
 [[epic]]
 id = 3
@@ -26,7 +26,7 @@ slug = "epic-a0-phonics-voice"
 title = "A0 Phonics and voice"
 covers = ["CAP-4", "CAP-8"]
 after = [
-  { epic = 1, needs = "speech sidecar + SpeechIn/Out ports" },
+  { epic = 1, needs = "1.5 SpeechOut Kokoro adapter (sidecar + SpeechIn/Out ports)" },
   { epic = 2, needs = "session handoff lifecycle + thin phonics to deepen" },
   { epic = 3, needs = "return Session shell + Self-check pattern + orientation strip" },
 ]

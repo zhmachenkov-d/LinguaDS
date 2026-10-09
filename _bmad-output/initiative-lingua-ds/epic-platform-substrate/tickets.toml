@@ -1,0 +1,107 @@
+# Platform substrate — agreed story breakdown. Build order = table order.
+
+[[entry]]
+id = 1
+type = "story"
+title = "Tracer: Harness pin and substrate path"
+description = "Pins Harness/Cordis (AD-2), scaffolds english-path Structural Seed, and loads the plugin; exposes a thin LearnerStore port with one journal append→projection of PathPosition/NextStepPlan/ProfileSnapshot/EvidenceItem; owns a stable sidecar IPC with SpeechIn/Out band stubs (AD-5/12 connectivity — engines deepened later, not a disposable second sidecar)."
+verify = "Person installs the bundle on the pinned Harness host; smoke shows projected PathPosition, NextStepPlan, ProfileSnapshot, and EvidenceItem, and SpeechIn/Out each return a score/band/fail flag via the sidecar."
+covers = []
+after = []
+hitl = true
+risk = "high"
+references = ["architecture-english-path/architecture-english-path.md#ad-2--one-installable-english-path-bundle-adopted", "architecture-english-path/architecture-english-path.md#structural-seed"]
+
+[[entry]]
+id = 2
+type = "story"
+title = "AD-12 journal and projector"
+description = "Completes closed JournalEvent types and full minimal AD-12 envelopes under the same schema_version and LearnerStore path established by the tracer — no parallel journal."
+verify = "Fixture appends each closed event type; projected ProfileSnapshot fields match the AD-12 table (PathPosition, NextStepPlan, EvidenceItem included)."
+covers = []
+after = [1]
+hitl = false
+risk = "high"
+references = ["architecture-english-path/architecture-english-path.md#ad-12--shared-contracts--schema-ownership-adopted"]
+
+[[entry]]
+id = 3
+type = "story"
+title = "Multi-learner SQLite isolation"
+description = "Enforces AD-8: one SQLite file per learner id, pre-session switch only, no cross-learner reads (learner-file routing and switch API only)."
+verify = "Two learner ids create two DB files; cross-read fails; switch API refuses mid-session use."
+covers = []
+after = [2]
+hitl = false
+risk = "medium"
+references = ["architecture-english-path/architecture-english-path.md#ad-8--multiple-local-learner-identities-adopted"]
+
+[[entry]]
+id = 4
+type = "story"
+title = "Speech sidecar and SpeechIn adapter"
+description = "Deepens the tracer's sidecar IPC in place with lifecycle management and a real faster-whisper SpeechIn adapter reporting scores/bands/fail flags (AD-5); speech artifacts stay ephemeral and must not touch learner SQLite."
+verify = "Fixture audio through SpeechIn yields a score, accept band, and fail flag."
+covers = []
+after = [1]
+hitl = false
+risk = "high"
+references = ["architecture-english-path/architecture-english-path.md#ad-5--own-ports-for-speech-and-store-harness-is-hostllm-adopted", "spec-english-path/voice-quality-bar.md"]
+
+[[entry]]
+id = 5
+type = "story"
+title = "SpeechOut Kokoro adapter"
+description = "Adds real Kokoro TTS on the same sidecar; SpeechOut reports scores/bands/fail flags (AD-5); no learner SQLite writes."
+verify = "TTS request returns an audio artifact plus band/fail flags on SpeechOut."
+covers = []
+after = [4]
+hitl = false
+risk = "high"
+references = ["architecture-english-path/architecture-english-path.md#ad-5--own-ports-for-speech-and-store-harness-is-hostllm-adopted"]
+
+[[entry]]
+id = 6
+type = "story"
+title = "Assess-IO port stub"
+description = "Adds ports/assess I/O-only stub at the Harness edge (AD-5); no coach/rubric semantics and no LearnerStore writes."
+verify = "Stub Assess call round-trips shaped I/O without writing LearnerStore."
+covers = []
+after = [1]
+hitl = false
+risk = "low"
+references = ["architecture-english-path/architecture-english-path.md#ad-5--own-ports-for-speech-and-store-harness-is-hostllm-adopted"]
+
+[[entry]]
+id = 7
+type = "story"
+title = "Session-ready installable packaging"
+description = "Packages the installable english-path bundle (AD-2) so Session epics consume LearnerStore, SpeechIn/Out, and Assess-IO without re-scaffolding."
+verify = "Clean install path is documented; Session-facing port surface is callable from a fresh install without re-scaffolding."
+covers = []
+after = [2, 3, 5, 6]
+hitl = false
+risk = "medium"
+references = ["architecture-english-path/architecture-english-path.md#ad-2--one-installable-english-path-bundle-adopted"]
+
+[[entry]]
+id = 8
+type = "story"
+title = "Refactor sweep"
+description = "Clears deferred cleanup from plans and reviews only; no new product scope."
+verify = "Deferred cleanup list from epic plans is cleared; no new product scope landed."
+covers = []
+after = [1, 2, 3, 4, 5, 6, 7]
+hitl = false
+risk = "low"
+
+[[entry]]
+id = 9
+type = "story"
+title = "E2E substrate suite"
+description = "Adds an automated suite that asserts the epic Done when: install, AD-12 projection, multi-learner isolation, speech bands + ports, Assess stub, and packaging exports."
+verify = "Suite asserts install, journal projection, multi-learner isolation, speech bands, Assess stub, and packaging exports (Done when 1–5)."
+covers = []
+after = [8]
+hitl = false
+risk = "medium"
