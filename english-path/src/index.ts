@@ -70,11 +70,35 @@ export { createLearnerStore, DEFAULT_DATA_DIR } from './ports/learner-store/inde
 export { createSpeechIn } from './ports/speech-in/index.js'
 export { createSpeechOut } from './ports/speech-out/index.js'
 export { SidecarClient } from './ports/shared/sidecar-client.js'
-export { commitJournal, commitSessionStart, commitPlanSet, commitEvidencePropose } from './supervisor/commit.js'
+export {
+  commitAttempt,
+  commitEvidencePropose,
+  commitFinale,
+  commitHandoffGrant,
+  commitHandoffReclaim,
+  commitJournal,
+  commitLevelAdvance,
+  commitPhase,
+  commitPlanSet,
+  commitPrefsSet,
+  commitSessionEnd,
+  commitSessionStart,
+} from './supervisor/commit.js'
 export type {
+  AttemptPayload,
   EvidenceItem,
+  FinalePayload,
+  GateEval,
+  HandoffGrantPayload,
+  HandoffReclaimPayload,
   JournalEvent,
+  LevelAdvanceMode,
+  LevelAdvancePayload,
   NextStepPlan,
   PathPosition,
+  PhaseId,
+  PhasePayload,
+  PrefsSetPayload,
   ProfileSnapshot,
+  SessionEndPayload,
 } from './ports/learner-store/types.js'

@@ -129,12 +129,23 @@ function createSession(handle: LearnerDb, onClose: () => void): LearnerSession {
 }
 
 export type {
+  AttemptPayload,
   EvidenceItem,
+  FinalePayload,
+  GateEval,
+  HandoffGrantPayload,
+  HandoffReclaimPayload,
   JournalEvent,
   JournalEventType,
+  LevelAdvanceMode,
+  LevelAdvancePayload,
   NextStepPlan,
   PathPosition,
+  PhaseId,
+  PhasePayload,
   PlanSetPayload,
+  PrefsSetPayload,
   ProfileSnapshot,
+  SessionEndPayload,
   SessionStartPayload,
 } from './types.js'

@@ -2,6 +2,7 @@ import type {
   EvidenceItem,
   EvidenceProposePayload,
   JournalEvent,
+  LevelAdvancePayload,
   NextStepPlan,
   PathPosition,
   PlanSetPayload,
@@ -130,6 +131,20 @@ function applyEvent(snapshot: ProfileSnapshot, event: JournalEvent): ProfileSnap
       const payload = event.payload as unknown as EvidenceProposePayload
       const deltas = Array.isArray(payload.deltas) ? payload.deltas : []
       next.evidence = mergeEvidence(next.evidence, deltas)
+      break
+    }
+    case 'phase':
+    case 'handoff_grant':
+    case 'handoff_reclaim':
+    case 'attempt':
+    case 'finale':
+    case 'session_end':
+      break
+    case 'level_advance': {
+      const payload = event.payload as unknown as LevelAdvancePayload
+      if (payload.mode === 'soft' || payload.mode === 'conditional') {
+        next.path = { ...next.path, level: payload.to_level }
+      }
       break
     }
     default:
