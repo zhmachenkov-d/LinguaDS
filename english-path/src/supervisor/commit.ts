@@ -1,6 +1,6 @@
 import type {
   AttemptPayload,
-  EvidenceItem,
+  EvidenceProposePayload,
   FinalePayload,
   HandoffGrantPayload,
   HandoffReclaimPayload,
@@ -69,10 +69,10 @@ export function commitPlanSet(session: LearnerSession, payload: PlanSetPayload, 
 
 export function commitEvidencePropose(
   session: LearnerSession,
-  deltas: EvidenceItem[],
+  payload: EvidenceProposePayload,
   at?: string,
 ) {
-  return commitJournal(session, 'evidence_propose', { deltas }, at)
+  return commitJournal(session, 'evidence_propose', { ...payload }, at)
 }
 
 export function commitFinale(session: LearnerSession, payload: FinalePayload, at?: string) {

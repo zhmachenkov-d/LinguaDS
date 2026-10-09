@@ -197,14 +197,16 @@ function establishPathPlanEvidence(session: ReturnType<ReturnType<typeof createL
   commitPlanSet(session, baselinePlan(), '2026-10-09T10:00:01.000Z')
   commitEvidencePropose(
     session,
-    [
-      {
-        id: 'phonics.a_vs_e',
-        kind: 'phonics_contrast',
-        status: 'unstable',
-        updated_at: '2026-10-09T10:00:02.000Z',
-      },
-    ],
+    {
+      deltas: [
+        {
+          id: 'phonics.a_vs_e',
+          kind: 'phonics_contrast',
+          status: 'unstable',
+          updated_at: '2026-10-09T10:00:02.000Z',
+        },
+      ],
+    },
     '2026-10-09T10:00:02.000Z',
   )
 }
@@ -255,14 +257,16 @@ describe('AD-12: full closed-type journal via commit*', () => {
     )
     commitEvidencePropose(
       session,
-      [
-        {
-          id: 'phonics.a_vs_e',
-          kind: 'phonics_contrast',
-          status: 'unstable',
-          updated_at: '2026-10-09T12:00:07.000Z',
-        },
-      ],
+      {
+        deltas: [
+          {
+            id: 'phonics.a_vs_e',
+            kind: 'phonics_contrast',
+            status: 'unstable',
+            updated_at: '2026-10-09T12:00:07.000Z',
+          },
+        ],
+      },
       '2026-10-09T12:00:07.000Z',
     )
     commitFinale(
@@ -372,8 +376,10 @@ describe('AD-12: level_advance projection', () => {
         },
         '2026-10-09T10:00:03.000Z',
       )
-      assert.equal(session.getSnapshot().path.level, 'A1')
-      assert.equal(session.getSnapshot().path.topic_id, 'letters')
+      const snapshot = session.getSnapshot()
+      assert.equal(snapshot.path.level, 'A1')
+      assert.equal(snapshot.path.topic_id, 'letters')
+      assert.equal(snapshot.plan.level, 'A0')
       store.closeAll()
     }
   })
@@ -397,6 +403,27 @@ describe('AD-12: level_advance projection', () => {
       '2026-10-09T10:00:03.000Z',
     )
     assert.deepEqual(session.getSnapshot().path, pathBefore)
+    store.closeAll()
+  })
+
+  it('unknown mode leaves path unchanged (loose append)', () => {
+    const dataDir = tempDir('ep-ad12-level-unknown-')
+    const store = createLearnerStore({ dataDir })
+    const session = store.open('learner-unknown-mode')
+    establishPathPlanEvidence(session)
+    const pathBefore = { ...session.getSnapshot().path }
+    session.append(
+      'level_advance',
+      {
+        from_level: 'A0',
+        to_level: 'A1',
+        mode: 'not-a-mode',
+        gate_evals: [],
+      },
+      '2026-10-09T10:00:03.000Z',
+    )
+    assert.deepEqual(session.getSnapshot().path, pathBefore)
+    assert.equal(session.getSnapshot().plan.level, 'A0')
     store.closeAll()
   })
 })
@@ -503,28 +530,32 @@ describe('AD-12: evidence upsert', () => {
     )
     commitEvidencePropose(
       session,
-      [
-        {
-          id: 'vocab.cat',
-          kind: 'vocab',
-          status: 'unstable',
-          updated_at: '2026-10-09T14:00:01.000Z',
-          payload: { due_at: '2026-10-10T00:00:00.000Z', box: 1 },
-        },
-      ],
+      {
+        deltas: [
+          {
+            id: 'vocab.cat',
+            kind: 'vocab',
+            status: 'unstable',
+            updated_at: '2026-10-09T14:00:01.000Z',
+            payload: { due_at: '2026-10-10T00:00:00.000Z', box: 1 },
+          },
+        ],
+      },
       '2026-10-09T14:00:01.000Z',
     )
     commitEvidencePropose(
       session,
-      [
-        {
-          id: 'vocab.cat',
-          kind: 'vocab',
-          status: 'confirmed',
-          updated_at: '2026-10-09T14:00:02.000Z',
-          payload: { due_at: '2026-10-12T00:00:00.000Z', box: 2 },
-        },
-      ],
+      {
+        deltas: [
+          {
+            id: 'vocab.cat',
+            kind: 'vocab',
+            status: 'confirmed',
+            updated_at: '2026-10-09T14:00:02.000Z',
+            payload: { due_at: '2026-10-12T00:00:00.000Z', box: 2 },
+          },
+        ],
+      },
       '2026-10-09T14:00:02.000Z',
     )
 

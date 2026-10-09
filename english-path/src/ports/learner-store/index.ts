@@ -131,6 +131,7 @@ function createSession(handle: LearnerDb, onClose: () => void): LearnerSession {
 export type {
   AttemptPayload,
   EvidenceItem,
+  EvidenceProposePayload,
   FinalePayload,
   GateEval,
   HandoffGrantPayload,
