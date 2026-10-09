@@ -1,0 +1,5 @@
+# Bundle patch — rows use package name (not absolute paths).
+# Applied when a Harness profile lists `english-path` in dsh.profile.bundles.
+- insert:
+    - id: english-path
+      name: english-path
