@@ -8,7 +8,7 @@ hitl: true
 risk: high
 tracker_id: "21"
 remote: "https://github.com/zhmachenkov-d/LinguaDS/issues/21"
-tracker_status: backlog
+tracker_status: done
 ---
 
 # Tracer: Harness pin and substrate path
