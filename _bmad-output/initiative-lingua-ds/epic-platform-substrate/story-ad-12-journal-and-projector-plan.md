@@ -109,7 +109,7 @@ context:
 
 - 2026-10-09 / quick / smoke full-type + journal-only — never `listEvents()` to assert 11 types and typed payloads persisted; snapshot-only checks — **medium** — verified: journal-only loop asserts path/plan/evidence + final `updated_at` only; intermediate `commit*` could fail to append and still pass if last event stamps `updated_at`; matrix row requires persist with typed payloads — route **patch**
 - 2026-10-09 / quick / smoke full-type — EvidenceItem/NextStepPlan asserts omit `kind`/`status`/`updated_at` and LessonRef `label` — **low** — verified: full fixture checks evidence `id` and plan lengths/`lesson_id` only; AD-12 table includes those fields; upsert/tracer cases cover some but not this AC fixture — route **patch**
-- 2026-10-09 / quick / `index.ts` missing `EvidenceProposePayload` export — **false** — verified: plan task re-exports *new* payload types; `EvidenceProposePayload` was defined but unexported before this change; all new AD-12 payloads are exported
+- 2026-10-09 / quick / `index.ts` missing `EvidenceProposePayload` export — **false** — verified: plan task re-exports _new_ payload types; `EvidenceProposePayload` was defined but unexported before this change; all new AD-12 payloads are exported
 
 ## Design Notes
 
