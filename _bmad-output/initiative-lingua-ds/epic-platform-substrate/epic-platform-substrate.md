@@ -1,5 +1,5 @@
 ---
-tracker_status: backlog
+tracker_status: in-progress
 remote: "https://github.com/zhmachenkov-d/LinguaDS/issues/13"
 tracker_id: 13
 key: ""
@@ -10,6 +10,7 @@ covers: []
 after: []
 assignee: ""
 risk: high
+status: in-progress
 ---
 
 # Platform substrate
