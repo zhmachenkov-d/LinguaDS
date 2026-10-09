@@ -1,0 +1,56 @@
+# Initiative breakdown — English Path v1 epics. Table order is build order.
+
+[[epic]]
+id = 1
+slug = "epic-platform-substrate"
+title = "Platform substrate"
+covers = []
+
+[[epic]]
+id = 2
+slug = "epic-first-launch-session"
+title = "First-launch Session"
+covers = ["CAP-1"]
+after = [{ epic = 1, needs = "installable bundle, LearnerStore journal/projection, speech ports usable for prefs/voice-or-text" }]
+
+[[epic]]
+id = 3
+slug = "epic-return-session-shell"
+title = "Return Session shell"
+covers = ["CAP-2", "CAP-7"]
+after = [{ epic = 2, needs = "prefs + PathPosition/NextStepPlan/Evidence shapes proven in a real first Session" }]
+
+[[epic]]
+id = 4
+slug = "epic-a0-phonics-voice"
+title = "A0 Phonics and voice"
+covers = ["CAP-4", "CAP-8"]
+after = [
+  { epic = 1, needs = "speech sidecar + SpeechIn/Out ports" },
+  { epic = 2, needs = "session handoff lifecycle + thin phonics to deepen" },
+  { epic = 3, needs = "return Session shell + Self-check pattern + orientation strip" },
+]
+
+[[epic]]
+id = 5
+slug = "epic-level-transition"
+title = "Soft level transition"
+covers = ["CAP-3"]
+after = [
+  { epic = 3, needs = "finale + Path map shell" },
+  { epic = 4, needs = "phonics EvidenceItems to feed gates" },
+]
+
+[[epic]]
+id = 6
+slug = "epic-path-multi-coach"
+title = "Path and multi-coach"
+covers = ["CAP-5"]
+after = [{ epic = 5, needs = "Level transition + assess gate contract live" }]
+
+[[epic]]
+id = 7
+slug = "epic-interview-practice"
+title = "Interview practice"
+covers = ["CAP-6"]
+after = [{ epic = 6, needs = "path near B1+/interview milestone + speaking/assess readiness shapes" }]
