@@ -144,3 +144,16 @@ context:
 **Manual checks:**
 
 - First model download during bootstrap/first ready; ready line before any request response
+
+## Code Review
+
+### 2026-10-10 — walkthrough Formal review (quick)
+
+0 decision-needed, 2 patch, 0 defer, 1 rejected.
+
+- [x] [Review][Patch] Ready-timeout teardown races next spawn; exit handler clears successor pending/ready [`english-path/src/ports/shared/sidecar-client.ts:174`]
+- [x] [Review][Patch] Ready-timeout smoke can soft-fail without waiting if `.venv` missing [`english-path/src/scripts/smoke.test.ts:249`]
+
+Rejected:
+
+- Dropped optional sidecar `error` on `SpeechBandResult` — low; thin port is score/band/fail only; expanding the public type is not warranted for this story.

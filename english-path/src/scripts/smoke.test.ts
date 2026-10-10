@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  existsSync,
   mkdtempSync,
   readdirSync,
   rmSync,
@@ -247,22 +248,27 @@ describe("I/O matrix: sidecar down / ready timeout soft-fail", () => {
   });
 
   it("ready timeout soft-fails without throwing", async () => {
-    const neverReady = path.join(tempDir("ep-never-ready-"), "never_ready.py");
-    writeFileSync(
-      neverReady,
-      "import time\ntime.sleep(3600)\n",
-      "utf8",
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required to prove ready-wait (not instant resolve fail)",
     );
+    const neverReady = path.join(tempDir("ep-never-ready-"), "never_ready.py");
+    writeFileSync(neverReady, "import time\ntime.sleep(3600)\n", "utf8");
     const client = new SidecarClient({
       pythonPath: DEFAULT_VENV_PYTHON,
       scriptPath: neverReady,
       readyTimeoutMs: 500,
       requestTimeoutMs: 500,
     });
+    const started = Date.now();
     try {
       const result = await client.request("speech_in", { text: "x" });
       assert.equal(result.fail, true);
       assert.equal(result.band, "fail");
+      assert.ok(
+        Date.now() - started >= 400,
+        "ready timeout must wait ~readyTimeoutMs, not fail closed before spawn",
+      );
     } finally {
       await client.dispose();
     }
