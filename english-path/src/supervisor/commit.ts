@@ -12,7 +12,7 @@ import type {
   PrefsSetPayload,
   SessionEndPayload,
   SessionStartPayload,
-} from '../ports/learner-store/index.js'
+} from "../ports/learner-store/index.js";
 
 /**
  * Thin supervisor commit helper — sole writer path into LearnerStore (AD-1 / AD-4).
@@ -24,7 +24,7 @@ export function commitJournal(
   payload: Record<string, unknown>,
   at?: string,
 ) {
-  return session.append(type, payload, at)
+  return session.append(type, payload, at);
 }
 
 export function commitSessionStart(
@@ -32,15 +32,23 @@ export function commitSessionStart(
   payload: SessionStartPayload,
   at?: string,
 ) {
-  return commitJournal(session, 'session_start', { ...payload }, at)
+  return commitJournal(session, "session_start", { ...payload }, at);
 }
 
-export function commitPrefsSet(session: LearnerSession, payload: PrefsSetPayload, at?: string) {
-  return commitJournal(session, 'prefs_set', { ...payload }, at)
+export function commitPrefsSet(
+  session: LearnerSession,
+  payload: PrefsSetPayload,
+  at?: string,
+) {
+  return commitJournal(session, "prefs_set", { ...payload }, at);
 }
 
-export function commitPhase(session: LearnerSession, payload: PhasePayload, at?: string) {
-  return commitJournal(session, 'phase', { ...payload }, at)
+export function commitPhase(
+  session: LearnerSession,
+  payload: PhasePayload,
+  at?: string,
+) {
+  return commitJournal(session, "phase", { ...payload }, at);
 }
 
 export function commitHandoffGrant(
@@ -48,7 +56,7 @@ export function commitHandoffGrant(
   payload: HandoffGrantPayload,
   at?: string,
 ) {
-  return commitJournal(session, 'handoff_grant', { ...payload }, at)
+  return commitJournal(session, "handoff_grant", { ...payload }, at);
 }
 
 export function commitHandoffReclaim(
@@ -56,15 +64,23 @@ export function commitHandoffReclaim(
   payload: HandoffReclaimPayload,
   at?: string,
 ) {
-  return commitJournal(session, 'handoff_reclaim', { ...payload }, at)
+  return commitJournal(session, "handoff_reclaim", { ...payload }, at);
 }
 
-export function commitAttempt(session: LearnerSession, payload: AttemptPayload, at?: string) {
-  return commitJournal(session, 'attempt', { ...payload }, at)
+export function commitAttempt(
+  session: LearnerSession,
+  payload: AttemptPayload,
+  at?: string,
+) {
+  return commitJournal(session, "attempt", { ...payload }, at);
 }
 
-export function commitPlanSet(session: LearnerSession, payload: PlanSetPayload, at?: string) {
-  return commitJournal(session, 'plan_set', { ...payload }, at)
+export function commitPlanSet(
+  session: LearnerSession,
+  payload: PlanSetPayload,
+  at?: string,
+) {
+  return commitJournal(session, "plan_set", { ...payload }, at);
 }
 
 export function commitEvidencePropose(
@@ -72,11 +88,15 @@ export function commitEvidencePropose(
   payload: EvidenceProposePayload,
   at?: string,
 ) {
-  return commitJournal(session, 'evidence_propose', { ...payload }, at)
+  return commitJournal(session, "evidence_propose", { ...payload }, at);
 }
 
-export function commitFinale(session: LearnerSession, payload: FinalePayload, at?: string) {
-  return commitJournal(session, 'finale', { ...payload }, at)
+export function commitFinale(
+  session: LearnerSession,
+  payload: FinalePayload,
+  at?: string,
+) {
+  return commitJournal(session, "finale", { ...payload }, at);
 }
 
 export function commitLevelAdvance(
@@ -84,9 +104,13 @@ export function commitLevelAdvance(
   payload: LevelAdvancePayload,
   at?: string,
 ) {
-  return commitJournal(session, 'level_advance', { ...payload }, at)
+  return commitJournal(session, "level_advance", { ...payload }, at);
 }
 
-export function commitSessionEnd(session: LearnerSession, payload: SessionEndPayload, at?: string) {
-  return commitJournal(session, 'session_end', { ...payload }, at)
+export function commitSessionEnd(
+  session: LearnerSession,
+  payload: SessionEndPayload,
+  at?: string,
+) {
+  return commitJournal(session, "session_end", { ...payload }, at);
 }
