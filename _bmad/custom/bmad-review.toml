@@ -1,5 +1,4 @@
 [workflow]
-slice_to_epics = "Cut epics by capability (spec CAP or tightly coupled pair) plus an opening platform epic for scaffold, ports, and shared persistence contracts. Module folders inside one installable bundle are not epic boundaries."
 
 activation_steps_prepend = [
   "Resolve document language: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.document_output_language`. Write all durable project artifacts and documents in `{document_output_language}` when set (fallback: English). Do not write project documents in the chat language.",
