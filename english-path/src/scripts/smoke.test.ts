@@ -8,11 +8,16 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { after, describe, it } from "node:test";
 import { createEnglishPath } from "../index.js";
 import { createLearnerStore } from "../ports/learner-store/index.js";
 import { createSpeechIn } from "../ports/speech-in/index.js";
 import { createSpeechOut } from "../ports/speech-out/index.js";
+import {
+  DEFAULT_VENV_PYTHON,
+  SidecarClient,
+} from "../ports/shared/sidecar-client.js";
 import {
   commitAttempt,
   commitEvidencePropose,
@@ -26,6 +31,17 @@ import {
   commitSessionEnd,
   commitSessionStart,
 } from "../supervisor/commit.js";
+
+const PACKAGE_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
+const FIXTURE_WAV = path.join(
+  PACKAGE_ROOT,
+  "sidecar",
+  "fixtures",
+  "clear-english.wav",
+);
 
 const tempRoots: string[] = [];
 
@@ -137,18 +153,22 @@ describe("I/O matrix: missing learner DB", () => {
   });
 });
 
-describe("I/O matrix: speech stub round-trip", () => {
-  it("SpeechIn and SpeechOut return score, band, fail", async () => {
+describe("I/O matrix: fixture audio happy path", () => {
+  it("SpeechIn scores committed fixture via audio_ref", async () => {
+    assert.ok(statSync(FIXTURE_WAV).isFile(), "fixture wav must exist");
     const api = createEnglishPath({
-      dataDir: tempDir("ep-speech-"),
+      dataDir: tempDir("ep-speech-fixture-"),
     });
     try {
-      const speechIn = await api.speechIn.score({ text: "cat" });
-      const speechOut = await api.speechOut.score({ text: "cat" });
+      const speechIn = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
       assert.equal(typeof speechIn.score, "number");
-      assert.equal(typeof speechIn.band, "string");
-      assert.equal(typeof speechIn.fail, "boolean");
+      assert.ok(
+        speechIn.band === "accept" || speechIn.band === "accept_low",
+        `expected accept|accept_low, got ${speechIn.band}`,
+      );
       assert.equal(speechIn.fail, false);
+
+      const speechOut = await api.speechOut.score({ text: "cat" });
       assert.equal(typeof speechOut.score, "number");
       assert.equal(typeof speechOut.band, "string");
       assert.equal(typeof speechOut.fail, "boolean");
@@ -157,14 +177,48 @@ describe("I/O matrix: speech stub round-trip", () => {
       await api.dispose();
     }
   });
+});
 
-  it("speech path does not write learner SQLite", async () => {
+describe("I/O matrix: missing / text-only audio soft-fail", () => {
+  it("text-only SpeechIn soft-fails without audio_ref", async () => {
+    const api = createEnglishPath({
+      dataDir: tempDir("ep-speech-textonly-"),
+    });
+    try {
+      const result = await api.speechIn.score({ text: "cat" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await api.dispose();
+    }
+  });
+
+  it("unreadable audio_ref soft-fails", async () => {
+    const api = createEnglishPath({
+      dataDir: tempDir("ep-speech-missing-audio-"),
+    });
+    try {
+      const result = await api.speechIn.score({
+        audio_ref: path.join(tempDir("ep-no-wav-"), "missing.wav"),
+      });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await api.dispose();
+    }
+  });
+});
+
+describe("I/O matrix: speech path never writes SQLite", () => {
+  it("fixture and soft-fail traffic leave dataDir empty", async () => {
     const dataDir = tempDir("ep-speech-nosql-");
     const api = createEnglishPath({ dataDir });
     try {
+      await api.speechIn.score({ audio_ref: FIXTURE_WAV });
       await api.speechIn.score({ text: "hi" });
       await api.speechOut.score({ text: "hi" });
-      // No LearnerStore.open → no sqlite files created under dataDir.
       let entries: string[] = [];
       try {
         entries = readdirSync(dataDir);
@@ -178,8 +232,8 @@ describe("I/O matrix: speech stub round-trip", () => {
   });
 });
 
-describe("I/O matrix: sidecar down soft-fail", () => {
-  it("ports report fail flag and do not throw", async () => {
+describe("I/O matrix: sidecar down / ready timeout soft-fail", () => {
+  it("forceDown ports report fail flag and do not throw", async () => {
     const speechIn = createSpeechIn({ forceDown: true });
     const speechOut = createSpeechOut({ forceDown: true });
     const inResult = await speechIn.score({ text: "x" });
@@ -190,6 +244,42 @@ describe("I/O matrix: sidecar down soft-fail", () => {
     assert.equal(outResult.band, "fail");
     await speechIn.dispose();
     await speechOut.dispose();
+  });
+
+  it("ready timeout soft-fails without throwing", async () => {
+    const neverReady = path.join(tempDir("ep-never-ready-"), "never_ready.py");
+    writeFileSync(
+      neverReady,
+      "import time\ntime.sleep(3600)\n",
+      "utf8",
+    );
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: neverReady,
+      readyTimeoutMs: 500,
+      requestTimeoutMs: 500,
+    });
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+    } finally {
+      await client.dispose();
+    }
+  });
+});
+
+describe("I/O matrix: lifecycle dispose", () => {
+  it("dispose exits child; later calls soft-fail", async () => {
+    const api = createEnglishPath({
+      dataDir: tempDir("ep-speech-dispose-"),
+    });
+    const first = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
+    assert.equal(first.fail, false);
+    await api.dispose();
+    const after = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
+    assert.equal(after.fail, true);
+    assert.equal(after.band, "fail");
   });
 });
 

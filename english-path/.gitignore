@@ -4,3 +4,7 @@ persistence/learners/
 *.sqlite
 *.sqlite-*
 .DS_Store
+sidecar/.venv/
+sidecar/.cache/
+**/__pycache__/
+*.pyc

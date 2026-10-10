@@ -1,0 +1,1 @@
+clear-english.wav — excerpt of John F. Kennedy inaugural address (US government work, public domain). Source: OpenAI Whisper test fixture (jfk.flac).
