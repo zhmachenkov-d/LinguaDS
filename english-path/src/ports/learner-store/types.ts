@@ -87,3 +87,61 @@ export interface PlanSetPayload {
 export interface EvidenceProposePayload {
   deltas: EvidenceItem[]
 }
+
+/** AD-10 closed wire shape for gate evaluation on level_advance. */
+export interface GateEval {
+  gate_id: string
+  critical: boolean
+  met: boolean
+  evidence_ids: string[]
+}
+
+export type PhaseId = 'orient' | 'plan' | 'block' | 'handoff' | 'finale' | 'level_overlay'
+
+export type LevelAdvanceMode = 'soft' | 'conditional' | 'blocked'
+
+export interface PrefsSetPayload {
+  prefs_patch: Record<string, unknown>
+}
+
+export interface PhasePayload {
+  phase_id: PhaseId
+}
+
+export interface HandoffGrantPayload {
+  coach_id: string
+  block_id?: string
+  reason?: string
+}
+
+export interface HandoffReclaimPayload {
+  coach_id: string
+  block_id?: string
+  reason?: string
+}
+
+export interface AttemptPayload {
+  attempt_id: string
+  evidence_key?: string
+  band?: string
+  score?: number
+  artifact_ref?: string
+}
+
+export interface FinalePayload {
+  descriptors: string[]
+  next_step?: string
+  artifact_refs?: string[]
+}
+
+export interface LevelAdvancePayload {
+  from_level: string
+  to_level: string
+  gate_evals: GateEval[]
+  mode: LevelAdvanceMode
+}
+
+export interface SessionEndPayload {
+  session_id: string
+  reason: string
+}
