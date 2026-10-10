@@ -3,7 +3,7 @@ id: 8
 type: story
 title: "Refactor sweep"
 parent: epic-platform-substrate
-after: ["21", "22", "25", "23", "26", "24", "27"]
+after: ["21", "24", "22", "25", "26", "23", "27"]
 hitl: false
 risk: low
 tracker_id: "28"

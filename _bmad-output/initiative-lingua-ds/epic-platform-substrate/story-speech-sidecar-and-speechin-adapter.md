@@ -8,7 +8,7 @@ hitl: false
 risk: high
 tracker_id: "23"
 remote: "https://github.com/zhmachenkov-d/LinguaDS/issues/23"
-tracker_status: backlog
+tracker_status: in-progress
 ---
 
 # Speech sidecar and SpeechIn adapter
