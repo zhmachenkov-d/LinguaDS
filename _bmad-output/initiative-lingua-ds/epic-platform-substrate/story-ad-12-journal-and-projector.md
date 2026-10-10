@@ -8,7 +8,7 @@ hitl: false
 risk: high
 tracker_id: "22"
 remote: "https://github.com/zhmachenkov-d/LinguaDS/issues/22"
-tracker_status: backlog
+tracker_status: done
 ---
 
 # AD-12 journal and projector

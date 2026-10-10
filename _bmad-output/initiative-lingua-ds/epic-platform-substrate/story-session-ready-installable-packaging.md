@@ -3,7 +3,7 @@ id: 7
 type: story
 title: "Session-ready installable packaging"
 parent: epic-platform-substrate
-after: ["22", "25", "26", "24"]
+after: ["24", "22", "26", "25"]
 hitl: false
 risk: medium
 tracker_id: "27"
