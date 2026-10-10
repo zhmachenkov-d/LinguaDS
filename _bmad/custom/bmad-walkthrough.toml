@@ -1,0 +1,10 @@
+[workflow]
+
+on_activation = """
+Resolve document language: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.document_output_language`.
+Write all durable project artifacts and documents in `{document_output_language}` when set (fallback: English). Do not write project documents in the chat language.
+"""
+
+persistent_facts = [
+  "Durable walkthrough artifacts follow core.document_output_language (English when set).",
+]

@@ -1,0 +1,5 @@
+[workflow]
+
+preferences = [
+  "When refining durable project documents, keep the improved artifact in core.document_output_language (English when set), even if chat is in another language.",
+]
