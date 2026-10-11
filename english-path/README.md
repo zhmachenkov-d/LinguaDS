@@ -6,15 +6,15 @@ Substrate scope: pin Harness/Cordis, thin LearnerStore journal→projection, Spe
 
 ## Pins
 
-| Component | Version |
-| --- | --- |
-| `@deepseek-ai/dsh` | `0.2.0-rc.2` |
-| `@deepseek-ai/cordis` | `4.0.4` |
-| `better-sqlite3` | `13.0.3` |
-| Node | `^22.19 \|\| >=24` |
-| Sidecar Python | `>=3.10,<3.13` (prefer 3.12 via `uv`) |
-| SpeechIn | `faster-whisper==1.2.1` |
-| SpeechOut | stub (Kokoro lands in a later story) |
+| Component             | Version                               |
+| --------------------- | ------------------------------------- |
+| `@deepseek-ai/dsh`    | `0.2.0-rc.2`                          |
+| `@deepseek-ai/cordis` | `4.0.4`                               |
+| `better-sqlite3`      | `13.0.3`                              |
+| Node                  | `^22.19 \|\| >=24`                    |
+| Sidecar Python        | `>=3.10,<3.13` (prefer 3.12 via `uv`) |
+| SpeechIn              | `faster-whisper==1.2.1`               |
+| SpeechOut             | stub (Kokoro lands in a later story)  |
 
 ## Layout
 
@@ -27,6 +27,7 @@ english-path/
   sidecar/
     main.py                 # SpeechIn (Whisper) + SpeechOut stub (JSON-lines stdio)
     pyproject.toml          # pinned faster-whisper
+    uv.lock                 # locked sidecar deps (uv sync)
     fixtures/               # clear-English wav for smoke
     .venv/                  # created locally via uv (gitignored)
 ```
@@ -45,10 +46,10 @@ uv sync
 
 ### Env vars
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `ENGLISH_PATH_PYTHON` | _(unset → use `.venv`)_ | Override sidecar interpreter |
-| `ENGLISH_PATH_WHISPER_MODEL` | `tiny.en` | faster-whisper model id |
+| Variable                     | Default                 | Purpose                      |
+| ---------------------------- | ----------------------- | ---------------------------- |
+| `ENGLISH_PATH_PYTHON`        | _(unset → use `.venv`)_ | Override sidecar interpreter |
+| `ENGLISH_PATH_WHISPER_MODEL` | `tiny.en`               | faster-whisper model id      |
 
 ## Install (local smoke)
 

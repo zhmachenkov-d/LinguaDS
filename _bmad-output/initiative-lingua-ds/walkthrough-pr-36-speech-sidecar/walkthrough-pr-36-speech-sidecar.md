@@ -4,7 +4,7 @@ Target: [PR #36](https://github.com/zhmachenkov-d/LinguaDS/pull/36) (`feat/1-4-s
 Plan: [story-speech-sidecar-and-speechin-adapter-plan.md](../epic-platform-substrate/story-speech-sidecar-and-speechin-adapter-plan.md)
 Purpose: before-merge review of story 1.4
 
-Current block: **5 — Smoke & soft-fail matrix**
+Current block: _(complete)_
 
 ## Blocks
 
@@ -12,8 +12,8 @@ Current block: **5 — Smoke & soft-fail matrix**
 - [x] **2 — Broad strokes** — done (entry 4 → index.ts; Thoughts + Test 16/16)
 - [x] **3 — Sidecar SpeechIn engine** — done (Formal review patches + Thoughts + Test; committed 61fe661)
 - [x] **4 — SidecarClient lifecycle** — done (Thoughts + Test; teardown race covered in 61fe661)
-- [ ] **5 — Smoke & soft-fail matrix** — in progress (patch pending Test)
-- [ ] **6 — Periphery** — unvisited
+- [x] **5 — Smoke & soft-fail matrix** — done (Thoughts + Patch 768ac13 + Test 18/18)
+- [x] **6 — Periphery** — done (Thoughts + README Layout patch)
 
 ---
 
@@ -85,7 +85,7 @@ Places:
 
 ## 5 — Smoke & soft-fail matrix
 
-Status: in progress · Changed during review: yes (smoke matrix gaps patched)
+Status: done · Changed during review: yes (smoke matrix gaps patched in 768ac13)
 
 Mechanism: Smoke replaces stub `text: "cat"` success with fixture `audio_ref` accept path plus soft-fail and isolation cases from the plan I/O matrix.
 
@@ -97,7 +97,7 @@ Places:
 
 ## 6 — Periphery
 
-Status: unvisited · Changed during review: no
+Status: done · Changed during review: yes (README Layout + uv.lock)
 
 - [ ] [english-path/.gitignore](../../../english-path/.gitignore) — ignore `sidecar/.venv` (and local model caches if listed)
 - [ ] [english-path/README.md](../../../english-path/README.md) — bootstrap (`uv venv`/`uv sync`), `ENGLISH_PATH_PYTHON`, `ENGLISH_PATH_WHISPER_MODEL`

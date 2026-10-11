@@ -199,3 +199,75 @@ Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:01:00+
 - Result: Extended smoke.test.ts — spawn exit before ready; request timeout after ready; dispose writes/checks child PID exit via ready_reply.py harness
 - Evidence: english-path/src/scripts/smoke.test.ts I/O matrix describes
 - Open: Test then user accept
+
+## 23 — Smoke & soft-fail matrix — commit
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:02:30+03:00
+
+- Action: User requested commit
+- Result: Created 768ac13 test(english-path): tighten sidecar soft-fail smoke matrix (smoke + plan Code Review + walkthrough narrative/log). Branch ahead 2 of origin; not pushed.
+- Evidence: git log -1 768ac13
+- Open: Test then user accept Block 5; push to update PR #36
+
+## 24 — Smoke & soft-fail matrix — Test
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:04:30+03:00
+
+- Action: Ran full english-path smoke after 768ac13 matrix patches
+- Result: 18/18 pass (was 16; +spawn-exit-before-ready, +request-timeout-after-ready). Matrix: fixture accept, text-only/missing soft-fail, no-SQLite, forceDown, spawn-exit, ready-timeout~517ms, request-timeout~530ms, dispose child PID exit.
+- Evidence: `cd english-path && npm run smoke`
+- Open: User accept Block 5
+
+## 25 — Smoke & soft-fail matrix — Done
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:12:00+03:00
+
+- Action: User accepted block 5 (done)
+- Result: Advanced to Periphery
+- Evidence: entries 21–24; user said done
+- Open: Block 6 review
+
+## 26 — Periphery — Thoughts
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:13:00+03:00
+
+- Action: Thoughts on Block 6 periphery
+- Result: .gitignore covers .venv/.cache/pycache; README documents uv bootstrap + ENGLISH_PATH_*; uv.lock tracked requires-python + faster-whisper 1.2.1; plan shipped with Code Review. Soft gap only: README Layout omits uv.lock. No blockers.
+- Evidence: .gitignore:7-9; README.md:34-62; uv.lock + pyproject; plan tracked
+- Open: User accept Block 6
+
+## 27 — Periphery — Patch
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:13:30+03:00
+
+- Action: User asked patch (README Layout)
+- Result: Added uv.lock line to english-path/README.md Layout tree
+- Evidence: README.md sidecar/ layout
+- Open: User accept Block 6 / commit
+
+## 28 — Periphery — Done
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:23:00+03:00
+
+- Action: User accepted block 6 (done)
+- Result: All walkthrough blocks complete; wrap-up available
+- Evidence: entries 26–27; user said done
+- Open: Wrap-up (commit dirty tree, push, merge PR #36)
+
+## 29 — Wrap-up
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:25:00+03:00
+
+- Action: User selected Wrap-up
+- Result: Awaiting confirm on commit dirty (README+walkthrough), push (61fe661+768ac13), merge PR #36
+- Evidence: walkthrough complete; dirty tree from README Layout + log append
+- Open: User confirm steps
+
+## 30 — Wrap-up — commit + push
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:25:30+03:00
+
+- Action: User confirmed follow-through steps 1–2 (commit + push; no merge)
+- Result: Committing README Layout + walkthrough complete; pushing branch (includes 61fe661, 768ac13 + this commit)
+- Evidence: wrap-up confirm "1,2"
+- Open: Merge PR #36 when ready
