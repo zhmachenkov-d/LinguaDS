@@ -136,3 +136,66 @@ Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-10T11:53:30+
 - Result: 16/16 pass. Engine-facing: fixture accept, text-only/missing soft-fail, no-SQLite, ready-timeout (~516ms with venv assert), dispose.
 - Evidence: `cd english-path && npm run smoke`
 - Open: User accept block 3; dirty tree commit still pending
+
+## 16 — Sidecar SpeechIn engine — commit
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-10T11:55:30+03:00
+
+- Action: User requested commit of dirty review artifacts
+- Result: Created 61fe661 fix(english-path): harden sidecar ready-timeout teardown (client + smoke + plan Code Review + walkthrough narrative/log). Branch ahead 1 of origin; not pushed.
+- Evidence: git log -1 61fe661
+- Open: Block 3 acceptance; push to update PR #36
+
+## 17 — Sidecar SpeechIn engine — accepted
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-10T11:56:00+03:00
+
+- Action: User accepted block 3 (done)
+- Result: Advanced to SidecarClient lifecycle
+- Evidence: user said done after Thoughts + Test + commit 61fe661
+- Open: Block 4 review
+
+## 18 — SidecarClient lifecycle — Thoughts
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-10T20:13:00+03:00
+
+- Action: Reviewed SidecarClient lifecycle after 61fe661 (pin, ready, timeouts, dispose, shared ownership)
+- Result: Lifecycle matches Intent. Teardown race fix in place (await stop; exit/onLine current-child only). Production path is createEnglishPath shared client; createSpeechIn is thin separate-client helper for forceDown tests — not a second product sidecar. No new defects for this block.
+- Evidence: sidecar-client.ts:25-27,81-99,192-254; index.ts:48-65; speech-in/index.ts:11-20; delayed repro 925542 was pre-fix evidence
+- Open: User accept block 4
+
+## 19 — SidecarClient lifecycle — Test
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-10T20:15:30+03:00
+
+- Action: Ran lifecycle smoke (4/4) + same-client ready-timeout→retry repro on post-61fe661 client
+- Result: Smoke pass (fixture, forceDown, ready-timeout~516ms, dispose). Flip repro: first fail@255ms, second accept@574ms (pre-fix was soft-fail@~2207ms). Third fail was fixture one-shot script exhaustion, not client race.
+- Evidence: `node --test --test-name-pattern 'forceDown|ready timeout|lifecycle dispose|fixture audio'`; ad-hoc flip.py same-client retry
+- Open: User accept block 4
+
+## 20 — SidecarClient lifecycle — Done
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T10:58:00+03:00
+
+- Action: User accepted block 4 (done) after Thoughts + Test
+- Result: SidecarClient lifecycle closed; advanced to Smoke & soft-fail matrix
+- Evidence: log entries 18–19; user said done
+- Open: Block 5 review
+
+## 21 — Smoke & soft-fail matrix — Thoughts
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T10:59:00+03:00
+
+- Action: Thoughts on Block 5 vs plan I/O matrix
+- Result: All 6 matrix rows covered (fixture accept, text-only/missing soft-fail, no-SQLite, forceDown+ready-timeout, dispose). SpeechIn stub text:cat success replaced; SpeechOut stub still text. No blocking defects. Soft gaps: no dedicated spawn-fail smoke; dispose checks soft-fail not PID exit; post-ready request-timeout not in smoke (not a matrix row).
+- Evidence: smoke.test.ts:157-290
+- Open: User accept / Test on Block 5
+
+## 22 — Smoke & soft-fail matrix — Patch
+
+Session: 2dcc6399-e917-4b14-8741-c2bfe82fce49 · Timestamp: 2026-10-11T11:01:00+03:00
+
+- Action: User said patch it on soft gaps from Thoughts
+- Result: Extended smoke.test.ts — spawn exit before ready; request timeout after ready; dispose writes/checks child PID exit via ready_reply.py harness
+- Evidence: english-path/src/scripts/smoke.test.ts I/O matrix describes
+- Open: Test then user accept

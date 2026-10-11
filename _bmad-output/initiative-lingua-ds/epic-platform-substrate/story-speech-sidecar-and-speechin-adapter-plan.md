@@ -157,3 +157,11 @@ context:
 Rejected:
 
 - Dropped optional sidecar `error` on `SpeechBandResult` — low; thin port is score/band/fail only; expanding the public type is not warranted for this story.
+
+### 2026-10-11 — walkthrough Thoughts (smoke matrix)
+
+0 decision-needed, 3 patch (smoke only).
+
+- [x] [Review][Patch] Add spawn-exit-before-ready soft-fail smoke [`english-path/src/scripts/smoke.test.ts`]
+- [x] [Review][Patch] Add post-ready request-timeout soft-fail smoke [`english-path/src/scripts/smoke.test.ts`]
+- [x] [Review][Patch] Dispose smoke asserts child PID exit (not only post-dispose soft-fail) [`english-path/src/scripts/smoke.test.ts`]

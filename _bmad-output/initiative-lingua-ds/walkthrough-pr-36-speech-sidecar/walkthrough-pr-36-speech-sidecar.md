@@ -4,15 +4,15 @@ Target: [PR #36](https://github.com/zhmachenkov-d/LinguaDS/pull/36) (`feat/1-4-s
 Plan: [story-speech-sidecar-and-speechin-adapter-plan.md](../epic-platform-substrate/story-speech-sidecar-and-speechin-adapter-plan.md)
 Purpose: before-merge review of story 1.4
 
-Current block: **3 — Sidecar SpeechIn engine**
+Current block: **5 — Smoke & soft-fail matrix**
 
 ## Blocks
 
 - [x] **1 — Intent** — done (Thoughts + Test; local smoke 16/16; no remote CI)
 - [x] **2 — Broad strokes** — done (entry 4 → index.ts; Thoughts + Test 16/16)
-- [ ] **3 — Sidecar SpeechIn engine** — in progress (formal review patches applied)
-- [ ] **4 — SidecarClient lifecycle** — unvisited
-- [ ] **5 — Smoke & soft-fail matrix** — unvisited
+- [x] **3 — Sidecar SpeechIn engine** — done (Formal review patches + Thoughts + Test; committed 61fe661)
+- [x] **4 — SidecarClient lifecycle** — done (Thoughts + Test; teardown race covered in 61fe661)
+- [ ] **5 — Smoke & soft-fail matrix** — in progress (patch pending Test)
 - [ ] **6 — Periphery** — unvisited
 
 ---
@@ -56,7 +56,7 @@ A reviewer must open these in order and confirm each:
 
 ## 3 — Sidecar SpeechIn engine
 
-Status: in progress · Changed during review: yes (formal review patches on SidecarClient teardown + ready-timeout smoke)
+Status: done · Changed during review: yes (formal review patches on SidecarClient teardown + ready-timeout smoke)
 
 Mechanism: Sidecar warm-loads faster-whisper, emits one `{"event":"ready"}` line, then maps mean word probability to score/band/fail from `audio_ref`. SpeechOut remains the stub handler. Missing/unreadable audio soft-fails.
 
@@ -71,7 +71,7 @@ Places:
 
 ## 4 — SidecarClient lifecycle
 
-Status: unvisited · Changed during review: no
+Status: done · Changed during review: yes (teardown patches already in 61fe661)
 
 Mechanism: Client prefers `sidecar/.venv` (or `ENGLISH_PATH_PYTHON`), treats ready only after the ready line (not spawn), applies 120s ready-wait and 60s SpeechIn timeout, soft-fails without throw, and disposes the child cleanly.
 
@@ -85,13 +85,13 @@ Places:
 
 ## 5 — Smoke & soft-fail matrix
 
-Status: unvisited · Changed during review: no
+Status: in progress · Changed during review: yes (smoke matrix gaps patched)
 
 Mechanism: Smoke replaces stub `text: "cat"` success with fixture `audio_ref` accept path plus soft-fail and isolation cases from the plan I/O matrix.
 
 Places:
 
-- [ ] [english-path/src/scripts/smoke.test.ts](../../../english-path/src/scripts/smoke.test.ts) — fixture accept; text-only/missing-audio soft-fail; forceDown; no-SQLite; dispose; ready-timeout as covered
+- [ ] [english-path/src/scripts/smoke.test.ts](../../../english-path/src/scripts/smoke.test.ts) — fixture accept; text-only/missing-audio soft-fail; forceDown; no-SQLite; ready-timeout; spawn exit before ready; post-ready request-timeout; dispose asserts child PID exit
 
 ---
 

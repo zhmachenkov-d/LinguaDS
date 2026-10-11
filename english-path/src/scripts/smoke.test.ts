@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   existsSync,
   mkdtempSync,
+  readFileSync,
   readdirSync,
   rmSync,
   statSync,
@@ -247,6 +248,29 @@ describe("I/O matrix: sidecar down / ready timeout soft-fail", () => {
     await speechOut.dispose();
   });
 
+  it("spawn exit before ready soft-fails without throwing", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required for spawn-fail soft-fail",
+    );
+    const boom = path.join(tempDir("ep-spawn-fail-"), "boom.py");
+    writeFileSync(boom, "import sys\nsys.exit(1)\n", "utf8");
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: boom,
+      readyTimeoutMs: 5_000,
+      requestTimeoutMs: 500,
+    });
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await client.dispose();
+    }
+  });
+
   it("ready timeout soft-fails without throwing", async () => {
     assert.ok(
       existsSync(DEFAULT_VENV_PYTHON),
@@ -273,17 +297,95 @@ describe("I/O matrix: sidecar down / ready timeout soft-fail", () => {
       await client.dispose();
     }
   });
+
+  it("request timeout after ready soft-fails without throwing", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required for post-ready request timeout",
+    );
+    const silent = path.join(tempDir("ep-req-timeout-"), "ready_silent.py");
+    writeFileSync(
+      silent,
+      [
+        "import json, sys",
+        'print(json.dumps({"event": "ready"}), flush=True)',
+        "for _line in sys.stdin:",
+        "    pass",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: silent,
+      readyTimeoutMs: 5_000,
+      requestTimeoutMs: 500,
+    });
+    const started = Date.now();
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.ok(
+        Date.now() - started >= 400,
+        "request timeout must wait ~requestTimeoutMs after ready",
+      );
+    } finally {
+      await client.dispose();
+    }
+  });
 });
 
 describe("I/O matrix: lifecycle dispose", () => {
   it("dispose exits child; later calls soft-fail", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required to assert child exit on dispose",
+    );
+    const dir = tempDir("ep-speech-dispose-");
+    const pidFile = path.join(dir, "child.pid");
+    const script = path.join(dir, "ready_reply.py");
+    writeFileSync(
+      script,
+      [
+        "import json, os, sys",
+        `with open(${JSON.stringify(pidFile)}, "w", encoding="utf8") as f:`,
+        "    f.write(str(os.getpid()))",
+        'print(json.dumps({"event": "ready"}), flush=True)',
+        "for line in sys.stdin:",
+        "    msg = json.loads(line)",
+        "    print(",
+        "        json.dumps(",
+        '            {"id": msg["id"], "result": {"score": 1.0, "band": "accept", "fail": False}}',
+        "        ),",
+        "        flush=True,",
+        "    )",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
     const api = createEnglishPath({
-      dataDir: tempDir("ep-speech-dispose-"),
+      dataDir: dir,
+      sidecar: {
+        pythonPath: DEFAULT_VENV_PYTHON,
+        scriptPath: script,
+        readyTimeoutMs: 5_000,
+        requestTimeoutMs: 5_000,
+      },
     });
-    const first = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
+    const first = await api.speechIn.score({ text: "x" });
     assert.equal(first.fail, false);
+    const pid = Number(readFileSync(pidFile, "utf8"));
+    assert.ok(Number.isInteger(pid) && pid > 0, "child pid file required");
     await api.dispose();
-    const after = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
+    let childAlive = true;
+    try {
+      process.kill(pid, 0);
+    } catch {
+      childAlive = false;
+    }
+    assert.equal(childAlive, false, "child must exit after dispose");
+    const after = await api.speechIn.score({ text: "x" });
     assert.equal(after.fail, true);
     assert.equal(after.band, "fail");
   });
