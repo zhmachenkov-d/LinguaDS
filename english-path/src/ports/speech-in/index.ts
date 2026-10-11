@@ -3,7 +3,7 @@ import { SidecarClient, type SidecarClientOptions, type SpeechBandResult } from 
 export type { SpeechBandResult }
 
 export interface SpeechInPort {
-  /** Stub STT scoring — returns score / accept band / fail only. */
+  /** SpeechIn scoring via sidecar — returns score / accept band / fail only. */
   score(input?: { audio_ref?: string; text?: string }): Promise<SpeechBandResult>
   dispose(): Promise<void>
 }

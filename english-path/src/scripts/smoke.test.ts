@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import {
+  existsSync,
   mkdtempSync,
+  readFileSync,
   readdirSync,
   rmSync,
   statSync,
@@ -8,11 +10,16 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { after, describe, it } from "node:test";
 import { createEnglishPath } from "../index.js";
 import { createLearnerStore } from "../ports/learner-store/index.js";
 import { createSpeechIn } from "../ports/speech-in/index.js";
 import { createSpeechOut } from "../ports/speech-out/index.js";
+import {
+  DEFAULT_VENV_PYTHON,
+  SidecarClient,
+} from "../ports/shared/sidecar-client.js";
 import {
   commitAttempt,
   commitEvidencePropose,
@@ -26,6 +33,17 @@ import {
   commitSessionEnd,
   commitSessionStart,
 } from "../supervisor/commit.js";
+
+const PACKAGE_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
+const FIXTURE_WAV = path.join(
+  PACKAGE_ROOT,
+  "sidecar",
+  "fixtures",
+  "clear-english.wav",
+);
 
 const tempRoots: string[] = [];
 
@@ -137,18 +155,22 @@ describe("I/O matrix: missing learner DB", () => {
   });
 });
 
-describe("I/O matrix: speech stub round-trip", () => {
-  it("SpeechIn and SpeechOut return score, band, fail", async () => {
+describe("I/O matrix: fixture audio happy path", () => {
+  it("SpeechIn scores committed fixture via audio_ref", async () => {
+    assert.ok(statSync(FIXTURE_WAV).isFile(), "fixture wav must exist");
     const api = createEnglishPath({
-      dataDir: tempDir("ep-speech-"),
+      dataDir: tempDir("ep-speech-fixture-"),
     });
     try {
-      const speechIn = await api.speechIn.score({ text: "cat" });
-      const speechOut = await api.speechOut.score({ text: "cat" });
+      const speechIn = await api.speechIn.score({ audio_ref: FIXTURE_WAV });
       assert.equal(typeof speechIn.score, "number");
-      assert.equal(typeof speechIn.band, "string");
-      assert.equal(typeof speechIn.fail, "boolean");
+      assert.ok(
+        speechIn.band === "accept" || speechIn.band === "accept_low",
+        `expected accept|accept_low, got ${speechIn.band}`,
+      );
       assert.equal(speechIn.fail, false);
+
+      const speechOut = await api.speechOut.score({ text: "cat" });
       assert.equal(typeof speechOut.score, "number");
       assert.equal(typeof speechOut.band, "string");
       assert.equal(typeof speechOut.fail, "boolean");
@@ -157,14 +179,48 @@ describe("I/O matrix: speech stub round-trip", () => {
       await api.dispose();
     }
   });
+});
 
-  it("speech path does not write learner SQLite", async () => {
+describe("I/O matrix: missing / text-only audio soft-fail", () => {
+  it("text-only SpeechIn soft-fails without audio_ref", async () => {
+    const api = createEnglishPath({
+      dataDir: tempDir("ep-speech-textonly-"),
+    });
+    try {
+      const result = await api.speechIn.score({ text: "cat" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await api.dispose();
+    }
+  });
+
+  it("unreadable audio_ref soft-fails", async () => {
+    const api = createEnglishPath({
+      dataDir: tempDir("ep-speech-missing-audio-"),
+    });
+    try {
+      const result = await api.speechIn.score({
+        audio_ref: path.join(tempDir("ep-no-wav-"), "missing.wav"),
+      });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await api.dispose();
+    }
+  });
+});
+
+describe("I/O matrix: speech path never writes SQLite", () => {
+  it("fixture and soft-fail traffic leave dataDir empty", async () => {
     const dataDir = tempDir("ep-speech-nosql-");
     const api = createEnglishPath({ dataDir });
     try {
+      await api.speechIn.score({ audio_ref: FIXTURE_WAV });
       await api.speechIn.score({ text: "hi" });
       await api.speechOut.score({ text: "hi" });
-      // No LearnerStore.open → no sqlite files created under dataDir.
       let entries: string[] = [];
       try {
         entries = readdirSync(dataDir);
@@ -178,8 +234,8 @@ describe("I/O matrix: speech stub round-trip", () => {
   });
 });
 
-describe("I/O matrix: sidecar down soft-fail", () => {
-  it("ports report fail flag and do not throw", async () => {
+describe("I/O matrix: sidecar down / ready timeout soft-fail", () => {
+  it("forceDown ports report fail flag and do not throw", async () => {
     const speechIn = createSpeechIn({ forceDown: true });
     const speechOut = createSpeechOut({ forceDown: true });
     const inResult = await speechIn.score({ text: "x" });
@@ -190,6 +246,148 @@ describe("I/O matrix: sidecar down soft-fail", () => {
     assert.equal(outResult.band, "fail");
     await speechIn.dispose();
     await speechOut.dispose();
+  });
+
+  it("spawn exit before ready soft-fails without throwing", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required for spawn-fail soft-fail",
+    );
+    const boom = path.join(tempDir("ep-spawn-fail-"), "boom.py");
+    writeFileSync(boom, "import sys\nsys.exit(1)\n", "utf8");
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: boom,
+      readyTimeoutMs: 5_000,
+      requestTimeoutMs: 500,
+    });
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.equal(result.score, 0);
+    } finally {
+      await client.dispose();
+    }
+  });
+
+  it("ready timeout soft-fails without throwing", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required to prove ready-wait (not instant resolve fail)",
+    );
+    const neverReady = path.join(tempDir("ep-never-ready-"), "never_ready.py");
+    writeFileSync(neverReady, "import time\ntime.sleep(3600)\n", "utf8");
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: neverReady,
+      readyTimeoutMs: 500,
+      requestTimeoutMs: 500,
+    });
+    const started = Date.now();
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.ok(
+        Date.now() - started >= 400,
+        "ready timeout must wait ~readyTimeoutMs, not fail closed before spawn",
+      );
+    } finally {
+      await client.dispose();
+    }
+  });
+
+  it("request timeout after ready soft-fails without throwing", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required for post-ready request timeout",
+    );
+    const silent = path.join(tempDir("ep-req-timeout-"), "ready_silent.py");
+    writeFileSync(
+      silent,
+      [
+        "import json, sys",
+        'print(json.dumps({"event": "ready"}), flush=True)',
+        "for _line in sys.stdin:",
+        "    pass",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    const client = new SidecarClient({
+      pythonPath: DEFAULT_VENV_PYTHON,
+      scriptPath: silent,
+      readyTimeoutMs: 5_000,
+      requestTimeoutMs: 500,
+    });
+    const started = Date.now();
+    try {
+      const result = await client.request("speech_in", { text: "x" });
+      assert.equal(result.fail, true);
+      assert.equal(result.band, "fail");
+      assert.ok(
+        Date.now() - started >= 400,
+        "request timeout must wait ~requestTimeoutMs after ready",
+      );
+    } finally {
+      await client.dispose();
+    }
+  });
+});
+
+describe("I/O matrix: lifecycle dispose", () => {
+  it("dispose exits child; later calls soft-fail", async () => {
+    assert.ok(
+      existsSync(DEFAULT_VENV_PYTHON),
+      "sidecar .venv python required to assert child exit on dispose",
+    );
+    const dir = tempDir("ep-speech-dispose-");
+    const pidFile = path.join(dir, "child.pid");
+    const script = path.join(dir, "ready_reply.py");
+    writeFileSync(
+      script,
+      [
+        "import json, os, sys",
+        `with open(${JSON.stringify(pidFile)}, "w", encoding="utf8") as f:`,
+        "    f.write(str(os.getpid()))",
+        'print(json.dumps({"event": "ready"}), flush=True)',
+        "for line in sys.stdin:",
+        "    msg = json.loads(line)",
+        "    print(",
+        "        json.dumps(",
+        '            {"id": msg["id"], "result": {"score": 1.0, "band": "accept", "fail": False}}',
+        "        ),",
+        "        flush=True,",
+        "    )",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    const api = createEnglishPath({
+      dataDir: dir,
+      sidecar: {
+        pythonPath: DEFAULT_VENV_PYTHON,
+        scriptPath: script,
+        readyTimeoutMs: 5_000,
+        requestTimeoutMs: 5_000,
+      },
+    });
+    const first = await api.speechIn.score({ text: "x" });
+    assert.equal(first.fail, false);
+    const pid = Number(readFileSync(pidFile, "utf8"));
+    assert.ok(Number.isInteger(pid) && pid > 0, "child pid file required");
+    await api.dispose();
+    let childAlive = true;
+    try {
+      process.kill(pid, 0);
+    } catch {
+      childAlive = false;
+    }
+    assert.equal(childAlive, false, "child must exit after dispose");
+    const after = await api.speechIn.score({ text: "x" });
+    assert.equal(after.fail, true);
+    assert.equal(after.band, "fail");
   });
 });
 
